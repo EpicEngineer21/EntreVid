@@ -1,0 +1,119 @@
+[
+  {
+    "id": "v1",
+    "title": "How I Built a SaaS to $10k/month",
+    "entrepreneur": "John Doe",
+    "description": "John shares his incredible journey of building a SaaS product from scratch while working a 9-to-5 job. He covers everything from validating the idea, building an MVP with no-code tools, acquiring the first 100 customers through cold outreach, and eventually scaling to $10,000 in monthly recurring revenue. A must-watch for aspiring tech entrepreneurs.",
+    "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "youtubeId": "dQw4w9WgXcQ",
+    "category": "Tech",
+    "tags": [
+      "SaaS",
+      "Startup",
+      "MRR",
+      "Side Hustle"
+    ],
+    "featured": true,
+    "createdAt": "2026-03-15T10:30:00Z"
+  },
+  {
+    "id": "v2",
+    "title": "From Food Truck to Franchise: My Journey",
+    "entrepreneur": "Jane Smith",
+    "description": "Jane started with a single food truck and a dream. In this video, she walks through the challenges of the food industry — from securing permits, perfecting recipes, managing staff, to eventually franchising her brand across 12 cities. Her story is a masterclass in resilience and scaling a physical business.",
+    "youtubeUrl": "https://www.youtube.com/watch?v=ZXsQAXx_ao0",
+    "youtubeId": "ZXsQAXx_ao0",
+    "category": "Food",
+    "tags": [
+      "Food Business",
+      "Franchise",
+      "Scaling",
+      "Restaurant"
+    ],
+    "featured": false,
+    "createdAt": "2026-03-18T14:00:00Z"
+  },
+  {
+    "id": "v3",
+    "title": "Bootstrapping a Health Tech Startup",
+    "entrepreneur": "Alex Lee",
+    "description": "Alex Lee, a former nurse turned entrepreneur, shares how she identified a gap in patient care technology and built a health-tech startup without any venture capital funding. She discusses lean development, navigating healthcare regulations, building trust with hospitals, and reaching profitability within 18 months.",
+    "youtubeUrl": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    "youtubeId": "jNQXAC9IVRw",
+    "category": "Health",
+    "tags": [
+      "HealthTech",
+      "Bootstrap",
+      "MedTech",
+      "Startup"
+    ],
+    "featured": false,
+    "createdAt": "2026-03-20T09:15:00Z"
+  },
+  {
+    "id": "v4",
+    "title": "The Art of E-commerce Dropshipping",
+    "entrepreneur": "Maria Garcia",
+    "description": "Maria Garcia breaks down her proven system for building a profitable dropshipping store. From niche selection and supplier vetting to Facebook ad strategies and customer retention, she covers the entire playbook that took her from zero to six figures in under a year. Real numbers, real lessons.",
+    "youtubeUrl": "https://www.youtube.com/watch?v=aircAruvnKk",
+    "youtubeId": "aircAruvnKk",
+    "category": "E-commerce",
+    "tags": [
+      "Dropshipping",
+      "E-commerce",
+      "Online Store",
+      "Marketing"
+    ],
+    "featured": true,
+    "createdAt": "2026-03-22T16:45:00Z"
+  },
+  {
+    "id": "v5",
+    "title": "How I Turned My Finance Blog into a Business",
+    "entrepreneur": "Raj Patel",
+    "description": "Raj Patel started a personal finance blog during college and turned it into a full-fledged media company generating revenue through courses, affiliate marketing, and brand partnerships. He shares his content strategy, SEO techniques, monetization milestones, and advice for creators looking to build a business around content.",
+    "youtubeUrl": "https://www.youtube.com/watch?v=PHe0bXAIuk0",
+    "youtubeId": "PHe0bXAIuk0",
+    "category": "Finance",
+    "tags": [
+      "Blogging",
+      "Content Creation",
+      "Personal Finance",
+      "Monetization"
+    ],
+    "featured": false,
+    "createdAt": "2026-03-25T11:00:00Z"
+  },
+  {
+    "id": "v6",
+    "title": "Building a Fitness App That Actually Works",
+    "entrepreneur": "Sophia Chen",
+    "description": "Sophia Chen, a personal trainer and self-taught developer, built a fitness app that attracted 50,000 users in its first year. She discusses the intersection of fitness expertise and technology, user experience design for health apps, community building, and the pivot that saved her startup from failure.",
+    "youtubeUrl": "https://www.youtube.com/watch?v=5qap5aO4i9A",
+    "youtubeId": "5qap5aO4i9A",
+    "category": "Health",
+    "tags": [
+      "Fitness",
+      "App Development",
+      "Health Tech",
+      "Community"
+    ],
+    "featured": false,
+    "createdAt": "2026-03-28T08:30:00Z"
+  },
+  {
+    "id": "vmo2oj9t12o4yc",
+    "title": "test1",
+    "entrepreneur": "name1",
+    "description": "How to start SaaS Startup",
+    "youtubeUrl": "https://youtu.be/180KJQryGwc?si=q5_G0xKeoCpFRsQo",
+    "youtubeId": "180KJQryGwc",
+    "category": "Tech",
+    "tags": [
+      "SaaS"
+    ],
+    "featured": false,
+    "submittedBy": "Aadhar Singhaniya",
+    "createdAt": "2026-04-17T09:02:08.485Z"
+  }
+]

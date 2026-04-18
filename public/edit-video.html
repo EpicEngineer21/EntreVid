@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Video | Entrepreneur Video Directory</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-surface-950 text-gray-100 font-sans min-h-screen flex flex-col antialiased">
+  <nav id="main-nav" class="sticky top-0 z-50 backdrop-blur-xl bg-surface-950/80 border-b border-white/5"></nav>
+
+  <main class="flex-grow max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+    <div class="mb-10 flex items-center gap-4">
+      <a href="/dashboard" class="w-10 h-10 rounded-xl bg-surface-800 hover:bg-surface-700 text-gray-400 hover:text-white flex items-center justify-center transition-colors border border-surface-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      </a>
+      <div>
+        <h1 class="font-display text-2xl sm:text-3xl font-bold text-white mb-1">Edit Video</h1>
+        <p class="text-gray-400 text-sm">Update the details of your video below.</p>
+      </div>
+    </div>
+
+    <div id="loading-state" class="bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 p-10 rounded-3xl text-center shadow-xl">
+      <div class="w-10 h-10 mx-auto rounded-full border-2 border-brand-500/30 border-t-brand-500 animate-spin mb-4"></div>
+      <p class="text-gray-400">Loading video details...</p>
+    </div>
+
+    <!-- Form -->
+    <form id="edit-form" class="hidden bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 p-6 sm:p-10 rounded-3xl shadow-xl space-y-8">
+      
+      <div id="error-box" class="hidden text-left bg-red-500/10 border border-red-500/20 rounded-xl p-4"></div>
+
+      <!-- General Info -->
+      <div>
+        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">General Details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="md:col-span-2">
+            <label for="title" class="block text-sm font-medium text-gray-300 mb-1.5">Video Title <span class="text-red-400">*</span></label>
+            <input type="text" id="title" required class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
+          </div>
+
+          <div>
+            <label for="entrepreneur" class="block text-sm font-medium text-gray-300 mb-1.5">Featured Entrepreneur <span class="text-red-400">*</span></label>
+            <input type="text" id="entrepreneur" required class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
+          </div>
+
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-300 mb-1.5">Category <span class="text-red-400">*</span></label>
+            <div class="relative">
+              <select id="category" required class="w-full pl-4 pr-10 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm">
+                <option value="Interviews">Interviews</option>
+                <option value="Documentaries">Documentaries</option>
+                <option value="Advice & Tips">Advice & Tips</option>
+                <option value="Case Studies">Case Studies</option>
+                <option value="Pitch Decks">Pitch Decks</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content & Tags -->
+      <div>
+        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">Content</h3>
+        <div class="space-y-6">
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-300 mb-1.5">Description <span class="text-red-400">*</span></label>
+            <textarea id="description" required rows="4" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm resize-y"></textarea>
+          </div>
+
+          <div>
+            <label for="tags" class="block text-sm font-medium text-gray-300 mb-1.5">Tags (Comma separated)</label>
+            <input type="text" id="tags" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Media Link -->
+      <div>
+        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">Media</h3>
+        <div>
+          <label for="youtubeUrl" class="block text-sm font-medium text-gray-300 mb-1.5">YouTube URL <span class="text-red-400">*</span></label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+            </div>
+            <input type="url" id="youtubeUrl" required class="w-full pl-11 pr-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-800">
+        <a href="/dashboard" class="px-5 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-white font-medium border border-surface-700 transition-all text-sm">Cancel</a>
+        <button type="submit" id="save-btn" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-all shadow-[0_0_20px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 text-sm inline-flex items-center gap-2">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </main>
+  
+  <footer id="app-footer" class="mt-auto border-t border-white/5 bg-surface-950/50"></footer>
+  <script src="/js/common.js"></script>
+  <script src="/js/edit-video.js"></script>
+</body>
+</html>

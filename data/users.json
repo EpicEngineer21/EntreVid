@@ -1,0 +1,89 @@
+[
+  {
+    "id": "umnexymf7v8f78",
+    "fullName": "Test User",
+    "email": "test@example.com",
+    "password": "$2b$10$ywflw8ao/r57x9.PTuhP4en6sTARccflG3EZh7N4miqtdq.XYgW0S",
+    "createdAt": "2026-03-31T18:19:32.995Z"
+  },
+  {
+    "id": "umnwscn4mobj9w",
+    "fullName": "Test Verifier",
+    "email": "testverify@test.com",
+    "password": "$2b$10$PaW7DzPd7EyDKnejrYcVZ.Yw5uSbY39TrwtATDAsd.K9.uITeZO92",
+    "verified": false,
+    "createdAt": "2026-04-13T06:02:20.567Z"
+  },
+  {
+    "id": "umnwsnevz649ix",
+    "fullName": "Aadhar Singhaniya",
+    "email": "aadharsinghaniya213@gmail.com",
+    "password": "$2b$10$7Dqd5WsFu4DrcIPpT1sjOu9mu6PJSKUweJDBFwa/pSFYGzCyiIuKm",
+    "verified": false,
+    "createdAt": "2026-04-13T06:10:43.103Z",
+    "failedLoginAttempts": 0,
+    "lockUntil": null,
+    "role": "admin"
+  },
+  {
+    "id": "umny5msvuhmc9q",
+    "fullName": "Chinmay Dixit",
+    "email": "chinmaydixit11@gmail.com",
+    "password": "$2b$10$K/86EvD4T4w1mlmNEkiOsei6EEO9421Qz6hiNZF4u9HqgQ4/QZ5kW",
+    "verified": false,
+    "createdAt": "2026-04-14T05:01:55.770Z"
+  },
+  {
+    "id": "umo17rqf90ywpl",
+    "fullName": "Aadhar",
+    "email": "aadharsinghaniya@gmail.com",
+    "password": "$2b$10$UPMeZzsgK4TPImB6HRQ0xOtdwBriO3FEuyIuELuELrSzfhsX3VFBq",
+    "verified": false,
+    "createdAt": "2026-04-16T08:25:03.621Z"
+  },
+  {
+    "id": "umo2vpqzbbzlt1",
+    "fullName": "John Doe",
+    "email": "computerscience2028@outlook.com",
+    "password": "$2b$12$jxKvBkujft8JAQl09WsMse1ZAzUGbShKQFFQQUKHoYWwmgDxC9gPG",
+    "role": "user",
+    "verified": false,
+    "failedLoginAttempts": 0,
+    "lockUntil": null,
+    "createdAt": "2026-04-17T12:23:07.991Z"
+  },
+  {
+    "id": "umo304vnr2t8xx",
+    "fullName": "Harry",
+    "email": "harry070925@gmail.com",
+    "password": "$2b$12$7oKTYN47c4/n9RDP.t/FxejmXEKbUT5DfvtDuhc5Cf/3whRS/D6c6",
+    "role": "user",
+    "verified": true,
+    "failedLoginAttempts": 0,
+    "lockUntil": null,
+    "createdAt": "2026-04-17T14:26:52.359Z",
+    "emailVerifiedAt": "2026-04-17T14:27:40.233Z"
+  },
+  {
+    "id": "umo30gr6zzws6i",
+    "fullName": "Test User",
+    "email": "testuser_54321@example.com",
+    "password": "$2b$12$jV1B/VixThHN.3PfK6p1h.t4NljnbZRGeEtcgNffWIE1zj2GCrCAe",
+    "role": "user",
+    "verified": false,
+    "failedLoginAttempts": 0,
+    "lockUntil": null,
+    "createdAt": "2026-04-17T14:36:06.443Z"
+  },
+  {
+    "id": "umo3x0uxfktzy6",
+    "fullName": "Test User",
+    "email": "testuser@domain.com",
+    "password": "$2b$12$8962VFkMH/oa0sk80w0rA.b69dsI6yQoQFcXUESq2ADqIJWzWlb5O",
+    "role": "user",
+    "verified": false,
+    "failedLoginAttempts": 0,
+    "lockUntil": null,
+    "createdAt": "2026-04-18T05:47:32.115Z"
+  }
+]

@@ -1,0 +1,369 @@
+[
+  {
+    "ts": "2026-04-17T09:22:25.740Z",
+    "event": "LOGIN_FAIL",
+    "userId": null,
+    "email": "n***y@nowhere.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": {
+      "reason": "no_account"
+    }
+  },
+  {
+    "ts": "2026-04-17T09:27:54.343Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T12:15:32.849Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T12:23:09.003Z",
+    "event": "SIGNUP",
+    "userId": "umo2vpqzbbzlt1",
+    "email": "c***8@outlook.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:19:12.293Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:25:10.602Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:26:53.350Z",
+    "event": "SIGNUP",
+    "userId": "umo304vnr2t8xx",
+    "email": "h***5@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:27:40.237Z",
+    "event": "EMAIL_VERIFIED",
+    "userId": "umo304vnr2t8xx",
+    "email": "h***5@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:34:18.775Z",
+    "event": "LOGIN_FAIL",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": {
+      "reason": "bad_password",
+      "attempts": 1
+    }
+  },
+  {
+    "ts": "2026-04-17T14:36:07.392Z",
+    "event": "SIGNUP",
+    "userId": "umo30gr6zzws6i",
+    "email": "t***1@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:37:08.346Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umo30gr6zzws6i",
+    "email": "t***1@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:38:28.431Z",
+    "event": "LOGOUT",
+    "userId": "umo30gr6zzws6i",
+    "email": "t***1@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:40:34.005Z",
+    "event": "FORGOT_PASSWORD_REQUEST",
+    "userId": "umo30gr6zzws6i",
+    "email": "t***1@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:41:02.995Z",
+    "event": "FORGOT_PASSWORD_NO_ACCOUNT",
+    "userId": null,
+    "email": "r***t@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:41:32.545Z",
+    "event": "FORGOT_PASSWORD_NO_ACCOUNT",
+    "userId": null,
+    "email": "r***t@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:42:03.678Z",
+    "event": "FORGOT_PASSWORD_NO_ACCOUNT",
+    "userId": null,
+    "email": "r***t@example.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T14:43:34.700Z",
+    "event": "LOGIN_FAIL",
+    "userId": null,
+    "email": "a***@b.com",
+    "ip": "::ffff:127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": {
+      "reason": "no_account"
+    }
+  },
+  {
+    "ts": "2026-04-17T17:32:18.435Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:32:35.906Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:33:17.751Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:33:26.793Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:36:45.989Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:36:56.205Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:52:47.808Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:56:16.507Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T17:56:43.555Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T18:43:50.094Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T18:44:41.873Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T18:56:02.472Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-17T18:56:14.318Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-18T03:19:47.042Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-18T03:20:09.903Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-18T05:44:08.274Z",
+    "event": "LOGIN_FAIL",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": {
+      "reason": "bad_password",
+      "attempts": 1
+    }
+  },
+  {
+    "ts": "2026-04-18T05:45:10.585Z",
+    "event": "LOGIN_FAIL",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": {
+      "reason": "bad_password",
+      "attempts": 2
+    }
+  },
+  {
+    "ts": "2026-04-18T05:46:57.857Z",
+    "event": "LOGIN_FAIL",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": {
+      "reason": "bad_password",
+      "attempts": 3
+    }
+  },
+  {
+    "ts": "2026-04-18T05:47:33.669Z",
+    "event": "SIGNUP",
+    "userId": "umo3x0uxfktzy6",
+    "email": "t***r@domain.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-18T05:53:29.089Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-18T06:28:41.648Z",
+    "event": "LOGOUT",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.",
+    "meta": null
+  },
+  {
+    "ts": "2026-04-18T06:39:13.575Z",
+    "event": "LOGIN_SUCCESS",
+    "userId": "umnwsnevz649ix",
+    "email": "a***3@gmail.com",
+    "ip": "::1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+    "meta": null
+  }
+]
