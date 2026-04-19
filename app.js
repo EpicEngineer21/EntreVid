@@ -274,6 +274,10 @@ app.use(cors({
     // In prod: strictly enforce the allowlist
     if (!IS_PROD && (!origin || origin === 'null')) return cb(null, true);
     if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    
+    // Automatically allow any Render domain dynamically
+    if (origin && origin.endsWith('.onrender.com')) return cb(null, true);
+
     cb(new Error(`CORS: origin "${origin}" not in allowlist`));
   },
   credentials: true,
