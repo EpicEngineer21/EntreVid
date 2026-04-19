@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   
-  <link rel="stylesheet" href="/css/style.css?v=2" />
+  <link rel="stylesheet" href="/css/style.css?v=3" />
 </head>
 <body class="bg-surface-950 text-gray-100 font-sans min-h-screen flex flex-col antialiased">
   <nav id="main-nav" class="sticky top-0 z-50 backdrop-blur-xl bg-surface-950/80 border-b border-white/5"></nav>
@@ -69,98 +69,33 @@
     </div>
 
     <!-- Video List Box -->
-    <!-- Container for Tabs and Content -->
     <div class="bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 rounded-3xl overflow-hidden shadow-xl">
-      
-      <!-- Main Dashboard Tabs -->
-      <div id="dashboard-tabs" class="flex border-b border-surface-700 overflow-x-auto hide-scrollbar pl-4">
-        <button id="tab-my-videos" class="px-6 py-4 text-sm font-medium border-b-2 border-brand-500 text-white whitespace-nowrap transition-colors flex items-center gap-2">
-          My Videos
-        </button>
-        <button id="tab-admin-panel" class="hidden px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition-colors whitespace-nowrap flex items-center gap-2">
-          Admin Panel
-        </button>
-      </div>
-
-      <!-- ================= MY VIDEOS SECTION ================= -->
-      <div id="section-my-videos">
-        <div class="p-6 sm:p-8 border-b border-surface-700 hidden" id="my-videos-header">
-          <h2 class="font-display text-xl font-bold text-white">Your Submitted Videos</h2>
-        </div>
-        
-        <div id="loading-state" class="p-8 text-center animate-pulse hidden">
-          <div class="w-10 h-10 mx-auto rounded-full border-2 border-brand-500/30 border-t-brand-500 animate-spin mb-4"></div>
-          <p class="text-gray-400">Loading videos...</p>
-        </div>
-
-        <div id="empty-state" class="hidden p-12 text-center">
-          <div class="w-16 h-16 rounded-2xl bg-surface-800 flex items-center justify-center mx-auto mb-4 border border-surface-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          </div>
-          <h3 class="font-display text-xl font-bold text-white mb-2">No videos yet</h3>
-          <p class="text-gray-400 mb-6 max-w-sm mx-auto">You haven't submitted any videos. Share your first entrepreneurial story!</p>
-          <a href="/submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-white font-medium border border-surface-600 transition-all">
-            Submit a Video
-          </a>
-        </div>
-
-        <div id="videos-list" class="divide-y divide-surface-700/50 hidden"></div>
-      </div>
-
-      <!-- ================= ADMIN PANEL SECTION ================= -->
-      <div id="section-admin-panel" class="hidden">
-        <div class="flex border-b border-surface-700 overflow-x-auto hide-scrollbar pl-4 bg-surface-950/30">
-          <button id="admin-tab-pending" class="px-6 py-3 text-sm font-medium border-b-2 border-purple-500 text-white whitespace-nowrap transition-colors flex items-center gap-2">
-            Pending Applications
-            <span id="pending-count" class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-xs">0</span>
-          </button>
-          <button id="admin-tab-reviewed" class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition-colors whitespace-nowrap">
-            Reviewed History
-          </button>
-        </div>
-
-        <div id="admin-loading-state" class="p-12 text-center hidden">
-          <div class="w-10 h-10 mx-auto rounded-full border-2 border-purple-500/30 border-t-purple-500 animate-spin mb-4"></div>
-          <p class="text-gray-400">Loading applications...</p>
-        </div>
-
-        <div id="admin-empty-state" class="hidden p-16 text-center">
-          <div class="w-16 h-16 rounded-2xl bg-surface-800 flex items-center justify-center mx-auto mb-4 border border-surface-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-          <h3 class="font-display text-xl font-bold text-white mb-1" id="admin-empty-title">All caught up!</h3>
-          <p class="text-gray-400">No applications to show here.</p>
-        </div>
-
-        <div id="apps-list" class="divide-y divide-surface-700/50 hidden"></div>
+      <div class="p-6 sm:p-8 border-b border-surface-700">
+        <h2 class="font-display text-xl font-bold text-white">Your Submitted Videos</h2>
       </div>
       
+      <div id="loading-state" class="p-8 text-center animate-pulse hidden">
+        <div class="w-10 h-10 mx-auto rounded-full border-2 border-brand-500/30 border-t-brand-500 animate-spin mb-4"></div>
+        <p class="text-gray-400">Loading videos...</p>
+      </div>
+
+      <div id="empty-state" class="hidden p-12 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-surface-800 flex items-center justify-center mx-auto mb-4 border border-surface-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="font-display text-xl font-bold text-white mb-2">No videos yet</h3>
+        <p class="text-gray-400 mb-6 max-w-sm mx-auto">You haven't submitted any videos. Share your first entrepreneurial story!</p>
+        <a href="/submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-white font-medium border border-surface-600 transition-all">
+          Submit a Video
+        </a>
+      </div>
+
+      <div id="videos-list" class="divide-y divide-surface-700/50 hidden"></div>
     </div>
   </main>
   
   <footer id="app-footer" class="mt-auto border-t border-white/5 bg-surface-950/50"></footer>
-
-  <!-- Reject Modal Template -->
-  <div id="reject-modal" class="fixed inset-0 z-[100] hidden">
-    <div class="absolute inset-0 bg-surface-950/80 backdrop-blur-sm modal-bg"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="bg-surface-900 border border-surface-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-        <div class="p-6 border-b border-surface-800">
-          <h3 class="text-lg font-bold text-white">Reject Application</h3>
-        </div>
-        <div class="p-6">
-          <label class="block text-sm font-medium text-gray-300 mb-2">Reason (sent to user)</label>
-          <textarea id="reject-reason" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 border-red-500 transition-all text-sm resize-none h-24" placeholder="Briefly explain why this application was denied..."></textarea>
-        </div>
-        <div class="p-6 border-t border-surface-800 flex justify-end gap-3 bg-surface-950/30">
-          <button id="cancel-reject" class="px-5 py-2 rounded-xl bg-surface-800 hover:bg-surface-700 text-white text-sm font-medium border border-surface-700 transition">Cancel</button>
-          <button id="confirm-reject" class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-medium transition shadow-lg shadow-red-500/20">Confirm Reject</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="/js/common.js?v=2"></script>
-  <script src="/js/dashboard.js?v=2"></script>
+  <script src="/js/common.js?v=3"></script>
+  <script src="/js/dashboard.js?v=3"></script>
 </body>
 </html>

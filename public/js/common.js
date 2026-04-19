@@ -183,7 +183,14 @@ window.renderNav = function renderNav(user, activePage) {
       mobileLinks += `<a href="/apply" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-colors">Apply to Upload</a>`;
     }
 
-
+    if (role === 'admin') {
+      desktopLinks += `
+        <a href="/admin/applications" id="nav-admin" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activePage === 'admin-applications' ? 'text-white bg-white/10' : 'text-purple-400 hover:text-purple-300 hover:bg-purple-500/10'}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
+          Admin
+        </a>`;
+      mobileLinks += `<a href="/admin/applications" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors">Admin Panel</a>`;
+    }
 
     // Role badges
     let roleBadge = '';
