@@ -1003,6 +1003,15 @@ app.post('/api/admin/applications/:userId/reject', requireAdmin, (req, res) => {
 // STATIC PAGE ROUTES (serve HTML files)
 // ============================================================
 
+// GET /
+app.get('/', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'index.html')));
+
+// GET /login
+app.get('/login', (req, res) => {
+  if (req.session.user) return res.redirect('/');
+  res.sendFile(path.join(PUBLIC_DIR, 'login.html'));
+});
+
 // GET /signup
 app.get('/signup', (req, res) => {
   if (req.session.user) return res.redirect('/');
