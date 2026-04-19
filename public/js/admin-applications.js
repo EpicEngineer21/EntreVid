@@ -186,7 +186,7 @@
     document.querySelectorAll('.reject-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const userId = btn.getAttribute('data-id');
-        const input = document.querySelector(\`.reject-reason-input[data-input-id="\${userId}"]\`);
+        const input = document.querySelector(`.reject-reason-input[data-input-id="${userId}"]`);
         const reason = input ? input.value.trim() : '';
 
         const originalHtml = btn.innerHTML;
