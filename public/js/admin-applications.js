@@ -75,7 +75,7 @@
 
       const actionsHtml = currentTab === 'pending' ? `
         <div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
-          <button class="approve-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-medium transition shadow-lg shadow-emerald-500/20 w-full sm:w-auto justify-center" data-id="${esc(app.userId)}">
+          <button class="approve-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#00e676] hover:bg-[#00c853] text-surface-950 font-bold transition shadow-lg shadow-[#00e676]/20 w-full sm:w-auto justify-center" data-id="${esc(app.userId)}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> Approve
           </button>
           <input type="text" placeholder="Rejection reason (optional, admin-only)" class="reject-reason-input flex-grow w-full bg-surface-950/50 border border-surface-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-surface-600 transition" data-input-id="${esc(app.userId)}">
@@ -97,7 +97,7 @@
                 ${initial}
               </div>
               <div>
-                <h3 class="text-white font-bold text-lg leading-tight mb-0.5">${esc(user.fullName)}</h3>
+                <h3 class="text-white font-bold text-2xl leading-tight mb-0.5">${esc(user.fullName)}</h3>
                 <p class="text-gray-400 text-sm">${esc(user.email)}</p>
               </div>
             </div>
