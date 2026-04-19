@@ -2,7 +2,7 @@
   "name": "fullstack-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "css:build": "npx @tailwindcss/cli -i src/input.css -o public/css/style.css --minify",
