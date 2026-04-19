@@ -1087,8 +1087,7 @@ app.get('/video/:id/edit', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'edi
 // GET /video/:id  (ensure it comes after more specific /video/... routes if there are any)
 app.get('/video/:id', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'video-details.html')));
 
-// GET /admin/applications
-app.get('/admin/applications', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'admin-applications.html')));
+
 
 
 

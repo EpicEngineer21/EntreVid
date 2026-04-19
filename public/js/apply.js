@@ -15,7 +15,7 @@
   const statusContainer = document.getElementById('status-container');
   const applyForm = document.getElementById('apply-form');
 
-  if (userRole === 'admin' || userRole === 'verified_entrepreneur') {
+  if (userRole === 'verified_entrepreneur') {
     statusContainer.innerHTML = `
       <div class="bg-emerald-500/10 border border-emerald-500/20 p-8 rounded-3xl text-center backdrop-blur-xl">
         <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
