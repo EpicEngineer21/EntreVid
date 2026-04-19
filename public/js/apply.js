@@ -31,8 +31,8 @@
   }
 
   // Fetch application status
-  const { res, data } = await window.getJson('/api/applications/me');
-  if (res.ok && data.ok) {
+  const data = await window.getJson('/api/applications/me');
+  if (data && data.ok) {
     const app = data.data.application;
     
     if (app && app.status === 'pending') {
