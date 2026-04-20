@@ -75,7 +75,7 @@
 
       const actionsHtml = currentTab === 'pending' ? `
         <div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
-          <button class="approve-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#00e676] hover:bg-[#00c853] text-surface-950 font-bold transition shadow-lg shadow-[#00e676]/20 w-full sm:w-auto justify-center" data-id="${esc(app.userId)}">
+          <button class="approve-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-500 hover:bg-green-400 text-white font-medium transition shadow-lg shadow-green-500/20 w-full sm:w-auto justify-center" data-id="${esc(app.userId)}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> Approve
           </button>
           <input type="text" placeholder="Rejection reason (optional, admin-only)" class="reject-reason-input flex-grow w-full bg-surface-950/50 border border-surface-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-surface-600 transition" data-input-id="${esc(app.userId)}">
@@ -127,7 +127,7 @@
           </div>
 
           <div class="flex flex-wrap gap-3 mb-4">
-            ${app.linkedinUrl ? `<a href="${esc(app.linkedinUrl)}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-500/10 text-indigo-400 text-sm font-medium border border-indigo-500/20 hover:bg-indigo-500/20 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> LinkedIn</a>` : ''}
+            ${app.linkedinUrl ? `<a href="${esc(app.linkedinUrl)}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium border border-transparent shadow transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> LinkedIn</a>` : ''}
             ${app.websiteUrl ? `<a href="${esc(app.websiteUrl)}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-800 text-gray-300 text-sm font-medium border border-surface-700 hover:bg-surface-700 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg> Website</a>` : ''}
           </div>
 
