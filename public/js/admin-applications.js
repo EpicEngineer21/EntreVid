@@ -16,7 +16,8 @@
   const appsList = document.getElementById('apps-list');
   const emptyTitle = document.getElementById('empty-title');
   const tabPending = document.getElementById('tab-pending');
-  const tabReviewed = document.getElementById('tab-reviewed');
+  const tabApproved = document.getElementById('tab-approved');
+  const tabRejected = document.getElementById('tab-rejected');
 
   let currentTab = 'pending';
   let allApps = [];
@@ -31,22 +32,28 @@
   }
 
   function renderList() {
-    const list = allApps.filter(a => currentTab === 'pending' ? a.status === 'pending' : a.status !== 'pending');
+    const list = allApps.filter(a => a.status === currentTab);
     
     // Update counts and tabs
     const pendingCount = allApps.filter(a => a.status === 'pending').length;
-    const reviewedCount = allApps.filter(a => a.status !== 'pending').length;
+    const approvedCount = allApps.filter(a => a.status === 'approved').length;
+    const rejectedCount = allApps.filter(a => a.status === 'rejected').length;
     
     tabPending.innerHTML = `${pendingCount} pending`;
-    tabReviewed.innerHTML = `${reviewedCount} approved`;
+    tabApproved.innerHTML = `${approvedCount} approved`;
+    tabRejected.innerHTML = `${rejectedCount} rejected`;
 
-    if (currentTab === 'pending') {
-      tabPending.className = 'px-4 py-1.5 rounded-full border border-amber-500 text-amber-500 bg-amber-500/10 text-sm font-medium transition-colors cursor-pointer';
-      tabReviewed.className = 'px-4 py-1.5 rounded-full border border-emerald-500/30 text-emerald-500/50 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/10 text-sm font-medium transition-colors cursor-pointer';
-    } else {
-      tabPending.className = 'px-4 py-1.5 rounded-full border border-amber-500/30 text-amber-500/50 hover:text-amber-400 hover:border-amber-500/50 hover:bg-amber-500/10 text-sm font-medium transition-colors cursor-pointer';
-      tabReviewed.className = 'px-4 py-1.5 rounded-full border border-emerald-500 text-emerald-500 bg-emerald-500/10 text-sm font-medium transition-colors cursor-pointer';
-    }
+    // Base classes
+    const baseClass = "px-4 py-1.5 rounded-full border text-sm font-medium transition-colors cursor-pointer";
+    
+    // Pending tab
+    tabPending.className = `${baseClass} ${currentTab === 'pending' ? 'border-amber-500 text-amber-500 bg-amber-500/10' : 'border-amber-500/30 text-amber-500/50 hover:text-amber-400 hover:border-amber-500/50 hover:bg-amber-500/10'}`;
+    
+    // Approved tab
+    tabApproved.className = `${baseClass} ${currentTab === 'approved' ? 'border-emerald-500 text-emerald-500 bg-emerald-500/10' : 'border-emerald-500/30 text-emerald-500/50 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/10'}`;
+    
+    // Rejected tab
+    tabRejected.className = `${baseClass} ${currentTab === 'rejected' ? 'border-red-500 text-red-500 bg-red-500/10' : 'border-red-500/30 text-red-500/50 hover:text-red-400 hover:border-red-500/50 hover:bg-red-500/10'}`;
 
     if (list.length === 0) {
       emptyState.classList.remove('hidden');
@@ -158,8 +165,13 @@
     renderList();
   });
 
-  tabReviewed.addEventListener('click', () => {
-    currentTab = 'reviewed';
+  tabApproved.addEventListener('click', () => {
+    currentTab = 'approved';
+    renderList();
+  });
+
+  tabRejected.addEventListener('click', () => {
+    currentTab = 'rejected';
     renderList();
   });
 
