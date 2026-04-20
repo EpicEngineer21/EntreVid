@@ -170,7 +170,7 @@
         const originalHtml = btn.innerHTML;
         window.setButtonLoading(btn, true);
         
-        const { res, data } = await window.postJson('/api/admin/applications/approve', { userId });
+        const { res, data } = await window.postJson(`/api/admin/applications/${userId}/approve`);
         if (res.ok && data.ok) {
           const app = allApps.find(a => a.userId === userId);
           if (app) app.status = 'approved';
@@ -192,7 +192,7 @@
         const originalHtml = btn.innerHTML;
         window.setButtonLoading(btn, true);
 
-        const { res, data } = await window.postJson('/api/admin/applications/reject', { userId, reason });
+        const { res, data } = await window.postJson(`/api/admin/applications/${userId}/reject`, { rejectionReason: reason });
         if (res.ok && data.ok) {
           const app = allApps.find(a => a.userId === userId);
           if (app) {
