@@ -3,8 +3,13 @@
  */
 (async function initSubmit() {
   await window.initAppContext();
-  if (!window.App.currentUser || (window.App.currentUser.role !== 'verified_entrepreneur' && window.App.currentUser.role !== 'admin')) {
+  if (!window.App.currentUser) {
     window.location.href = '/login';
+    return;
+  }
+  if (window.App.currentUser.role !== 'verified_entrepreneur' && window.App.currentUser.role !== 'admin') {
+    sessionStorage.setItem('applyNotice', 'To submit a video, please apply for entrepreneur verification first.');
+    window.location.href = '/apply';
     return;
   }
 

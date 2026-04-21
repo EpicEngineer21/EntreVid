@@ -10,6 +10,11 @@
   
   window.renderNav(window.App.currentUser);
   window.renderFooter();
+  const applyNotice = sessionStorage.getItem('applyNotice');
+  if (applyNotice) {
+    window.showFlash('error', applyNotice);
+    sessionStorage.removeItem('applyNotice');
+  }
 
   const userRole = window.App.currentUser.role;
   const statusContainer = document.getElementById('status-container');

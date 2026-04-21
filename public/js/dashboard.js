@@ -44,11 +44,12 @@
       month: 'short', day: 'numeric', year: 'numeric'
     });
     
+    const dYtId = window.extractYouTubeId(video.youtubeId) || window.extractYouTubeId(video.youtubeUrl) || '';
     return `
       <div class="px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-6 hover:bg-surface-800/30 transition-colors group">
         <!-- Thumbnail -->
         <a href="/video/${esc(video.id)}" class="shrink-0 relative w-full sm:w-48 aspect-video rounded-xl overflow-hidden bg-surface-900 border border-surface-700 block">
-          <img src="https://img.youtube.com/vi/${esc(video.youtubeId)}/mqdefault.jpg" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <img src="https://img.youtube.com/vi/${esc(dYtId)}/mqdefault.jpg" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
           <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-surface-950/20">
             <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center pl-0.5 border border-white/20">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>

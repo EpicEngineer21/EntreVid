@@ -56,10 +56,17 @@ async function logAudit(eventType, { userId = null, email = null, ip = null, use
 
 // ── YouTube helpers ──────────────────────────────────────────
 function isValidYouTubeUrl(url) {
-  return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)[\w-]{11}/.test(url);
+  return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)[\w-]{11}/.test(url);
 }
 function extractYouTubeId(url) {
-  const patterns = [/youtube\.com\/watch\?v=([\w-]{11})/, /youtu\.be\/([\w-]{11})/, /youtube\.com\/embed\/([\w-]{11})/];
+  if (!url) return null;
+  if (/^[\w-]{11}$/.test(url)) return url;
+  const patterns = [
+    /youtube\.com\/watch\?v=([\w-]{11})/, 
+    /youtu\.be\/([\w-]{11})/, 
+    /youtube\.com\/embed\/([\w-]{11})/,
+    /youtube\.com\/shorts\/([\w-]{11})/
+  ];
   for (const p of patterns) { const m = url.match(p); if (m) return m[1]; }
   return null;
 }

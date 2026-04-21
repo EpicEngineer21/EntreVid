@@ -36,7 +36,17 @@
 
   document.title = `${v.title} | EntreVid`;
 
-  document.getElementById('video-player').src = `https://www.youtube.com/embed/${window.escapeHtml(v.youtubeId)}?rel=0&modestbranding=1`;
+  const cleanId = window.extractYouTubeId(v.youtubeId) || window.extractYouTubeId(v.youtubeUrl);
+  const playerIframe = document.getElementById('video-player');
+  if (cleanId) {
+    playerIframe.src = `https://www.youtube.com/embed/${window.escapeHtml(cleanId)}?rel=0&modestbranding=1`;
+  } else {
+    playerIframe.classList.add('hidden');
+    const errDiv = document.createElement('div');
+    errDiv.className = 'absolute inset-0 flex items-center justify-center bg-surface-900 border border-red-500/30 text-red-400 font-medium z-10';
+    errDiv.textContent = 'Invalid video URL';
+    playerIframe.parentElement.appendChild(errDiv);
+  }
   document.getElementById('v-category').textContent = v.category;
   document.getElementById('v-date').textContent = new Date(v.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
   if (v.featured) document.getElementById('v-featured').classList.remove('hidden');

@@ -18,10 +18,12 @@ function videoCard(video, ownerMap) {
     `<span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-700/50 text-gray-400 whitespace-nowrap">${esc(t)}</span>`
   ).join('') + ((video.tags || []).length > 2 ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-700/50 text-gray-400">...</span>' : '');
 
+  const ytId = window.extractYouTubeId(video.youtubeId) || window.extractYouTubeId(video.youtubeUrl) || '';
+  const entrepreneurName = video.entrepreneur || video.submittedBy || 'Anonymous';
   return `
     <div class="video-card group bg-surface-800/50 rounded-2xl overflow-hidden border border-surface-700/50 hover:border-brand-500/30 hover:bg-surface-800 transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/10 hover:-translate-y-1 flex flex-col">
       <a href="/video/${esc(video.id)}" class="relative block aspect-video w-full overflow-hidden bg-surface-900">
-        <img src="https://img.youtube.com/vi/${esc(video.youtubeId)}/mqdefault.jpg" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" loading="lazy" />
+        <img src="https://img.youtube.com/vi/${esc(ytId)}/mqdefault.jpg" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100" loading="lazy" />
         <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-950/80 backdrop-blur-md text-xs font-medium text-white border border-white/10 shadow-sm">
           ${esc(video.category)}
         </div>
@@ -39,9 +41,9 @@ function videoCard(video, ownerMap) {
         <div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-700/50">
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-full bg-surface-700 flex items-center justify-center text-white font-medium text-[10px] ring-1 ring-surface-600">
-              ${esc(video.entrepreneur.charAt(0).toUpperCase())}
+              ${esc(entrepreneurName.charAt(0).toUpperCase())}
             </div>
-            <span class="text-xs font-medium text-gray-300 truncate max-w-[100px]">${esc(video.entrepreneur)}</span>
+            <span class="text-xs font-medium text-gray-300 truncate max-w-[100px]">${esc(entrepreneurName)}</span>
             ${verifiedBadge}
           </div>
           <div class="flex gap-1.5 overflow-hidden">${tagsHtml}</div>
@@ -54,10 +56,12 @@ function videoCard(video, ownerMap) {
 // ── Featured card ────────────────────────────────────────────
 function featuredCard(video) {
   const dateStr = new Date(video.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  const fYtId = window.extractYouTubeId(video.youtubeId) || window.extractYouTubeId(video.youtubeUrl) || '';
+  const fEntrepreneur = video.entrepreneur || video.submittedBy || 'Anonymous';
   return `
     <a href="/video/${esc(video.id)}" class="group relative bg-surface-800 rounded-2xl overflow-hidden border border-surface-700 hover:border-brand-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-brand-500/20 hover:-translate-y-1 block h-full flex flex-col md:flex-row">
       <div class="relative w-full md:w-2/5 aspect-video md:aspect-auto">
-        <img src="https://img.youtube.com/vi/${esc(video.youtubeId)}/mqdefault.jpg" alt="${esc(video.title)}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <img src="https://img.youtube.com/vi/${esc(fYtId)}/mqdefault.jpg" alt="${esc(video.title)}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         <div class="absolute inset-0 bg-gradient-to-t from-surface-900/80 to-transparent md:bg-gradient-to-r"></div>
         <div class="absolute bottom-3 left-3 md:bottom-auto md:top-3 px-2.5 py-1 rounded bg-surface-900/80 backdrop-blur text-xs font-semibold text-white border border-white/10 shadow-sm">Featured</div>
         <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -78,9 +82,9 @@ function featuredCard(video) {
         <p class="text-gray-400 text-sm mb-4 line-clamp-2 leading-relaxed">${esc(video.description)}</p>
         <div class="flex items-center gap-2.5 mt-auto">
           <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs ring-2 ring-surface-800 shrink-0">
-            ${esc(video.entrepreneur.charAt(0).toUpperCase())}
+            ${esc(fEntrepreneur.charAt(0).toUpperCase())}
           </div>
-          <span class="text-sm font-medium text-gray-300 line-clamp-1">${esc(video.entrepreneur)}</span>
+          <span class="text-sm font-medium text-gray-300 line-clamp-1">${esc(fEntrepreneur)}</span>
         </div>
       </div>
     </a>

@@ -17,6 +17,23 @@ window.escapeHtml = function escapeHtml(str) {
   return div.innerHTML;
 };
 
+// ── YouTube Extractor ─────────────────────────────────────────
+window.extractYouTubeId = function extractYouTubeId(urlOrId) {
+  if (!urlOrId) return null;
+  if (/^[\w-]{11}$/.test(urlOrId)) return urlOrId;
+  const patterns = [
+    /youtube\.com\/watch\?v=([\w-]{11})/, 
+    /youtu\.be\/([\w-]{11})/, 
+    /youtube\.com\/embed\/([\w-]{11})/,
+    /youtube\.com\/shorts\/([\w-]{11})/
+  ];
+  for (const p of patterns) { 
+    const m = urlOrId.match(p); 
+    if (m) return m[1]; 
+  }
+  return null;
+};
+
 // ── Fetch helpers ────────────────────────────────────────────
 window.getJson = async function getJson(url) {
   const res = await fetch(url, { credentials: 'include' });
