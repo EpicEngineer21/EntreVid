@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EntreVid ΓÇö Dashboard Page
  */
 (async function initDashboard() {
@@ -18,17 +18,17 @@
 
   loadingState.classList.remove('hidden');
 
-  const { res, data } = await window.getJson('/api/my/videos');
+  const payload = await window.getJson('/api/my/videos');
 
   loadingState.classList.add('hidden');
 
-  if (!res.ok || !data.data) {
+  if (payload.__httpError || !payload.ok || !payload.data) {
     emptyState.classList.remove('hidden');
     emptyState.innerHTML = '<p class="text-red-400">Failed to load dashboard data. Please refresh.</p>';
     return;
   }
 
-  const videos = data.data.videos || [];
+  const videos = payload.data.videos || [];
   statTotal.textContent = videos.length;
 
   if (videos.length === 0) {

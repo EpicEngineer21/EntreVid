@@ -12,11 +12,11 @@
   const loadingState = document.getElementById('loading-state');
   const content = document.getElementById('video-content');
 
-  const { res, data } = await window.getJson(`/api/videos/${videoId}`);
+  const payload = await window.getJson(`/api/videos/${videoId}`);
   
   loadingState.classList.add('hidden');
 
-  if (!res.ok || !data.data) {
+  if (payload.__httpError || !payload.ok || !payload.data) {
     content.classList.remove('hidden');
     content.innerHTML = `
       <div class="text-center py-20">
@@ -28,8 +28,8 @@
     return;
   }
 
-  const v = data.data.video;
-  const owner = data.data.owner;
+  const v = payload.data.video;
+  const owner = payload.data.owner;
   const currUser = window.App.currentUser || {};
   const isOwner = v.ownerUserId === currUser.id;
   const isAdmin = currUser.role === 'admin';
@@ -42,8 +42,9 @@
   if (v.featured) document.getElementById('v-featured').classList.remove('hidden');
   
   document.getElementById('v-title').textContent = v.title;
-  document.getElementById('v-entrepreneur').textContent = v.entrepreneur;
-  document.getElementById('v-avatar').textContent = v.entrepreneur.charAt(0).toUpperCase();
+  const entrepreneurName = v.entrepreneur || (owner && owner.fullName) || v.submittedBy || 'Anonymous';
+  document.getElementById('v-entrepreneur').textContent = entrepreneurName;
+  document.getElementById('v-avatar').textContent = entrepreneurName.charAt(0).toUpperCase();
   if (owner && owner.role === 'verified_entrepreneur') document.getElementById('v-verified').classList.remove('hidden');
 
   document.getElementById('v-youtube-btn').href = v.youtubeUrl;

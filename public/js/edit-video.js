@@ -19,18 +19,18 @@
   const form = document.getElementById('edit-form');
   const errorBox = document.getElementById('error-box');
 
-  const { res, data } = await window.getJson(`/api/videos/${videoId}`);
+  const payload = await window.getJson(`/api/videos/${videoId}`);
   
   loadingState.classList.add('hidden');
 
-  if (!res.ok || !data.ok) {
+  if (payload.__httpError || !payload.ok || !payload.data) {
     loadingState.classList.remove('hidden');
     loadingState.innerHTML = '<p class="text-red-400">Failed to load video or you do not have permission.</p>';
     setTimeout(() => { window.location.href = '/dashboard'; }, 2000);
     return;
   }
 
-  const v = data.data.video;
+  const v = payload.data.video;
   if (v.ownerUserId !== window.App.currentUser.id && window.App.currentUser.role !== 'admin') {
     window.location.href = '/dashboard';
     return;
