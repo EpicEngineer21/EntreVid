@@ -38,14 +38,54 @@
 
   const cleanId = window.extractYouTubeId(v.youtubeId) || window.extractYouTubeId(v.youtubeUrl);
   const playerIframe = document.getElementById('video-player');
+  const playerContainer = playerIframe.parentElement;
+  
   if (cleanId) {
-    playerIframe.src = `https://www.youtube.com/embed/${window.escapeHtml(cleanId)}?rel=0&modestbranding=1`;
+    // Use nocookie domain and origin param to avoid Error 153 on restricted videos
+    playerIframe.src = `https://www.youtube-nocookie.com/embed/${window.escapeHtml(cleanId)}?rel=0&modestbranding=1&origin=${window.location.origin}`;
+    
+    // Detect if iframe fails to load (Error 153 = embedding blocked)
+    playerIframe.addEventListener('error', function() {
+      showVideoFallback();
+    });
+    
+    // Also detect via message event (YouTube sends postMessage on errors)
+    window.addEventListener('message', function onYtMsg(e) {
+      if (e.origin.includes('youtube') && typeof e.data === 'string') {
+        try {
+          const msg = JSON.parse(e.data);
+          if (msg.event === 'onError' || (msg.info && msg.info.errorCode)) {
+            showVideoFallback();
+            window.removeEventListener('message', onYtMsg);
+          }
+        } catch(_) {}
+      }
+    });
+    
+    function showVideoFallback() {
+      playerIframe.classList.add('hidden');
+      const fallback = document.createElement('a');
+      fallback.href = v.youtubeUrl || `https://www.youtube.com/watch?v=${cleanId}`;
+      fallback.target = '_blank';
+      fallback.rel = 'noopener noreferrer';
+      fallback.className = 'absolute inset-0 flex flex-col items-center justify-center bg-surface-900 text-white z-10 cursor-pointer group';
+      fallback.innerHTML = `
+        <img src="https://img.youtube.com/vi/${window.escapeHtml(cleanId)}/hqdefault.jpg" class="absolute inset-0 w-full h-full object-cover opacity-40" alt="Thumbnail" />
+        <div class="relative z-10 flex flex-col items-center gap-3">
+          <div class="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center pl-1 shadow-lg group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="text-sm font-medium text-gray-300">Watch on YouTube</span>
+        </div>
+      `;
+      playerContainer.appendChild(fallback);
+    }
   } else {
     playerIframe.classList.add('hidden');
     const errDiv = document.createElement('div');
     errDiv.className = 'absolute inset-0 flex items-center justify-center bg-surface-900 border border-red-500/30 text-red-400 font-medium z-10';
     errDiv.textContent = 'Invalid video URL';
-    playerIframe.parentElement.appendChild(errDiv);
+    playerContainer.appendChild(errDiv);
   }
   document.getElementById('v-category').textContent = v.category;
   document.getElementById('v-date').textContent = new Date(v.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
