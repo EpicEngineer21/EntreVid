@@ -455,8 +455,38 @@ app.get('/api/csrf', (req, res) => {
   res.json({ csrfToken: req.session.csrfToken });
 });
 
-app.get('/api/me', (req, res) => {
-  res.json({ user: req.session.user || null });
+app.get('/api/me', async (req, res) => {
+  try {
+    if (!req.session.user?.id) {
+      return res.json({ user: null });
+    }
+
+    const dbUser = await User.findOne({ id: req.session.user.id });
+    if (!dbUser) {
+      delete req.session.user;
+      return req.session.save(() => res.json({ user: null }));
+    }
+
+    const syncedUser = {
+      id: dbUser.id,
+      fullName: dbUser.fullName,
+      email: dbUser.email,
+      role: dbUser.role || 'user',
+      verified: dbUser.verified !== false,
+      profileImageUrl: dbUser.profileImageUrl || '',
+    };
+
+    const changed = JSON.stringify(req.session.user) !== JSON.stringify(syncedUser);
+    req.session.user = syncedUser;
+
+    if (changed) {
+      return req.session.save(() => res.json({ user: req.session.user }));
+    }
+    return res.json({ user: req.session.user });
+  } catch (error) {
+    console.error('Session sync error:', error);
+    return res.json({ user: req.session.user || null });
+  }
 });
 
 app.get('/api/profile', requireAuth, async (req, res) => {
