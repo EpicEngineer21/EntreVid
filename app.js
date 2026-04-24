@@ -71,6 +71,24 @@ function extractYouTubeId(url) {
   return null;
 }
 
+function normalizeCategory(category) {
+  const value = (category || '').trim();
+  if (!value) return '';
+  const map = {
+    'ecommerce': 'E-commerce',
+    'e-commerce': 'E-commerce',
+    'finance': 'Finance',
+    'food': 'Food',
+    'health': 'Health',
+    'interviews': 'Interviews',
+    'tech': 'Tech',
+    'other': 'Other',
+    'others': 'Other',
+  };
+  const key = value.toLowerCase();
+  return map[key] || value;
+}
+
 // ── ID generator ─────────────────────────────────────────────
 function generateId(prefix = 'v') {
   return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
@@ -441,13 +459,82 @@ app.get('/api/me', (req, res) => {
   res.json({ user: req.session.user || null });
 });
 
+app.get('/api/profile', requireAuth, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.user.id });
+    if (!user) return res.status(404).json({ ok: false, errors: ['User not found.'] });
+    return res.json({
+      ok: true,
+      data: {
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role || 'user',
+        profileImageUrl: user.profileImageUrl || '',
+        verified: user.verified !== false,
+      },
+    });
+  } catch (error) {
+    console.error('Profile fetch error:', error);
+    return res.status(500).json({ ok: false, errors: ['Failed to fetch profile.'] });
+  }
+});
+
+app.put('/api/profile', requireAuth, async (req, res) => {
+  try {
+    const fullName = (req.body.fullName || '').trim();
+    const profileImageUrl = (req.body.profileImageUrl || '').trim();
+
+    const errors = [];
+    if (!fullName) errors.push('Full name is required.');
+    if (fullName.length > 80) errors.push('Full name must be under 80 characters.');
+    if (profileImageUrl && !/^https?:\/\/.+/i.test(profileImageUrl)) {
+      errors.push('Profile image URL must start with http:// or https://.');
+    }
+    if (profileImageUrl && profileImageUrl.length > 300) {
+      errors.push('Profile image URL must be under 300 characters.');
+    }
+    if (errors.length > 0) return res.status(400).json({ ok: false, errors });
+
+    const user = await User.findOne({ id: req.session.user.id });
+    if (!user) return res.status(404).json({ ok: false, errors: ['User not found.'] });
+
+    user.fullName = fullName;
+    user.profileImageUrl = profileImageUrl;
+    await user.save();
+
+    req.session.user = {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role || 'user',
+      verified: user.verified !== false,
+      profileImageUrl: user.profileImageUrl || '',
+    };
+    req.session.save(() => {
+      res.json({
+        ok: true,
+        message: 'Profile updated successfully.',
+        data: {
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role || 'user',
+          profileImageUrl: user.profileImageUrl || '',
+        },
+      });
+    });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ ok: false, errors: ['Failed to update profile.'] });
+  }
+});
+
 app.get('/api/videos', async (req, res) => {
   try {
     const { search, category } = req.query;
 
     const query = { status: 'published' };
     if (category && category !== 'All') {
-      query.category = category;
+      query.category = normalizeCategory(category);
     }
     if (search) {
       const q = String(search).toLowerCase();
@@ -591,6 +678,7 @@ app.post('/api/auth/login', rl.login, async (req, res) => {
       email: user.email,
       role: user.role || 'user',
       verified: user.verified !== false,
+      profileImageUrl: user.profileImageUrl || '',
     };
 
     await logAudit('LOGIN_SUCCESS', { userId: user.id, email, ip: getIp(req), userAgent: req.headers['user-agent'] });
@@ -647,7 +735,14 @@ app.post('/api/auth/verify-email', rl.verifyEmail, async (req, res) => {
 
     await logAudit('EMAIL_VERIFIED', { userId: user.id, email, ip: getIp(req), userAgent: req.headers['user-agent'] });
 
-    req.session.user = { id: user.id, fullName: user.fullName, email: user.email, role: user.role || 'user', verified: true };
+    req.session.user = {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role || 'user',
+      verified: true,
+      profileImageUrl: user.profileImageUrl || '',
+    };
     delete req.session.pendingEmail;
     delete req.session.pendingName;
 
@@ -824,7 +919,7 @@ app.post('/api/videos', requireEntrepreneur, rl.upload, async (req, res) => {
       description:  description.trim(),
       youtubeUrl:   youtubeUrl.trim(),
       youtubeId:    extractYouTubeId(youtubeUrl),
-      category,
+      category: normalizeCategory(category),
       tags:         tags ? (typeof tags === 'string' ? tags.split(',') : tags).map(t => t.trim()).filter(Boolean) : [],
       featured:     false,
       submittedBy:  req.session.user.fullName,
@@ -866,7 +961,7 @@ app.post('/api/videos/:id/edit', requireEntrepreneur, async (req, res) => {
     video.description  = description.trim();
     video.youtubeUrl   = youtubeUrl.trim();
     video.youtubeId    = extractYouTubeId(youtubeUrl);
-    video.category     = category;
+    video.category     = normalizeCategory(category);
     video.tags         = tags ? (typeof tags === 'string' ? tags.split(',') : tags).map(t => t.trim()).filter(Boolean) : [];
     await video.save();
 
@@ -1087,6 +1182,9 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'dashboar
 
 // GET /submit
 app.get('/submit', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'submit.html')));
+
+// GET /profile
+app.get('/profile', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'profile.html')));
 
 // GET /video/:id/edit
 app.get('/video/:id/edit', (req, res) => res.sendFile(path.join(PUBLIC_DIR, 'edit-video.html')));

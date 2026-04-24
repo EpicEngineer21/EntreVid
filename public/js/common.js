@@ -162,6 +162,40 @@ window.showErrors = function showErrors(containerId, errors) {
   `;
 };
 
+window.renderStateMessage = function renderStateMessage(containerId, options) {
+  const container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+  if (!container) return;
+  const type = options?.type || 'info';
+  const title = options?.title || '';
+  const message = options?.message || '';
+  const actionText = options?.actionText || '';
+  const actionId = options?.actionId || '';
+  const colorClass = type === 'error'
+    ? 'text-red-400 border-red-500/20 bg-red-500/5'
+    : 'text-gray-400 border-surface-700 bg-surface-900/30';
+  container.classList.remove('hidden');
+  container.innerHTML = `
+    <div class="p-6 rounded-2xl border ${colorClass} text-center">
+      <h3 class="font-display text-lg text-white mb-2">${escapeHtml(title)}</h3>
+      <p class="text-sm mb-4">${escapeHtml(message)}</p>
+      ${actionText ? `<button id="${escapeHtml(actionId)}" class="px-4 py-2 rounded-lg bg-surface-800 hover:bg-surface-700 text-white text-sm border border-surface-700 transition-colors">${escapeHtml(actionText)}</button>` : ''}
+    </div>
+  `;
+};
+
+window.setSectionLoading = function setSectionLoading(loadingId, contentId, isLoading) {
+  const loadingEl = document.getElementById(loadingId);
+  const contentEl = document.getElementById(contentId);
+  if (loadingEl) loadingEl.classList.toggle('hidden', !isLoading);
+  if (contentEl) contentEl.classList.toggle('hidden', isLoading);
+};
+
+window.confirmAction = async function confirmAction(options) {
+  const title = options?.title || 'Are you sure?';
+  const message = options?.message || 'Please confirm this action.';
+  return window.confirm(`${title}\n\n${message}`);
+};
+
 // ── Role-aware Navigation ────────────────────────────────────
 window.renderNav = function renderNav(user, activePage) {
   const nav = document.getElementById('main-nav');
@@ -222,16 +256,19 @@ window.renderNav = function renderNav(user, activePage) {
 
     const initial = esc(user.fullName.charAt(0).toUpperCase());
     const firstName = esc(user.fullName.split(' ')[0]);
+    const avatar = user.profileImageUrl
+      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-800" onerror="this.onerror=null;this.replaceWith(document.createElement('div'));" />`
+      : `<div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold ring-2 ring-surface-800">${initial}</div>`;
 
     authSection = `
       <div class="w-px h-6 bg-white/10 mx-2"></div>
-      <div class="flex items-center gap-2 pl-2">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold ring-2 ring-surface-800">${initial}</div>
+      <a href="/profile" class="flex items-center gap-2 pl-2 pr-2 py-1 rounded-lg transition-all duration-200 ${active('profile')}">
+        ${avatar}
         <div class="flex items-center gap-1.5">
           <span class="text-sm font-medium text-gray-300 max-w-[100px] truncate">${firstName}</span>
           ${roleBadge}
         </div>
-      </div>
+      </a>
       <button id="nav-logout-btn" class="nav-link ml-1 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         Logout
@@ -241,15 +278,19 @@ window.renderNav = function renderNav(user, activePage) {
     if (role === 'verified_entrepreneur') mobileRoleBadge = '<span class="text-emerald-400 text-xs">✓ Verified</span>';
     if (role === 'admin') mobileRoleBadge = '<span class="text-purple-400 text-xs">👑 Admin</span>';
 
+    const mobileAvatar = user.profileImageUrl
+      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" class="w-8 h-8 rounded-full object-cover" onerror="this.onerror=null;this.replaceWith(document.createElement('div'));" />`
+      : `<div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">${initial}</div>`;
+
     mobileAuthSection = `
       <div class="border-t border-white/5 my-2"></div>
-      <div class="px-4 py-2.5 flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">${initial}</div>
+      <a href="/profile" class="px-4 py-2.5 flex items-center gap-3 rounded-lg transition-all duration-200 ${active('profile')}">
+        ${mobileAvatar}
         <div>
           <div class="text-sm font-medium text-white flex items-center gap-1.5">${esc(user.fullName)} ${mobileRoleBadge}</div>
           <div class="text-xs text-gray-500">${esc(user.email)}</div>
         </div>
-      </div>
+      </a>
       <button id="nav-logout-btn-mobile" class="w-full text-left block px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">Logout</button>`;
   } else {
     authSection = `

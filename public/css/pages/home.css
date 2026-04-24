@@ -8,3 +8,11 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
+
+#pagination-controls button:disabled {
+  cursor: not-allowed;
+}
+
+#directory .video-card {
+  min-height: 100%;
+}

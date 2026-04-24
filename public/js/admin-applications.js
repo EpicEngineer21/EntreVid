@@ -23,12 +23,17 @@
   let allApps = [];
 
   const data = await window.getJson('/api/admin/applications');
-  loadingState.classList.add('hidden');
+  window.setSectionLoading('loading-state', 'apps-list', false);
 
   if (data && data.ok) {
     allApps = data.data.applications || [];
   } else {
-    window.showFlash('error', 'Failed to load applications.');
+    window.renderStateMessage('empty-state', {
+      type: 'error',
+      title: 'Failed to load applications',
+      message: 'Please refresh and try again.',
+    });
+    return;
   }
 
   function renderList() {
@@ -179,6 +184,11 @@
     document.querySelectorAll('.approve-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const userId = btn.getAttribute('data-id');
+        const confirmed = await window.confirmAction({
+          title: 'Approve application?',
+          message: 'This will grant verified entrepreneur access.',
+        });
+        if (!confirmed) return;
         const originalHtml = btn.innerHTML;
         window.setButtonLoading(btn, true);
         
@@ -200,6 +210,11 @@
         const userId = btn.getAttribute('data-id');
         const input = document.querySelector(`.reject-reason-input[data-input-id="${userId}"]`);
         const reason = input ? input.value.trim() : '';
+        const confirmed = await window.confirmAction({
+          title: 'Reject application?',
+          message: 'You can still include a rejection reason for clarity.',
+        });
+        if (!confirmed) return;
 
         const originalHtml = btn.innerHTML;
         window.setButtonLoading(btn, true);

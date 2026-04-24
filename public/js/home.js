@@ -94,6 +94,57 @@ function featuredCard(video) {
 // ── Load and render videos ───────────────────────────────────
 let allVideosCache = [];
 let ownerMapCache = {};
+let currentPage = 1;
+
+function sortVideos(videos, sortBy) {
+  const list = [...videos];
+  if (sortBy === 'oldest') {
+    list.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+  } else if (sortBy === 'az') {
+    list.sort((a, b) => String(a.title || '').localeCompare(String(b.title || '')));
+  } else {
+    list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }
+  return list;
+}
+
+function renderVideoGrid(videos) {
+  const videoGrid = document.getElementById('video-grid');
+  const emptyState = document.getElementById('empty-state');
+  const resultsCount = document.getElementById('results-count');
+  const sortFilter = document.getElementById('sort-filter');
+  const pageSizeFilter = document.getElementById('page-size-filter');
+  const pageSize = Number(pageSizeFilter.value || 9);
+  const paginationControls = document.getElementById('pagination-controls');
+  const pageIndicator = document.getElementById('page-indicator');
+  const prevBtn = document.getElementById('page-prev-btn');
+  const nextBtn = document.getElementById('page-next-btn');
+
+  const sorted = sortVideos(videos, sortFilter.value);
+  const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const startIdx = (currentPage - 1) * pageSize;
+  const currentPageRows = sorted.slice(startIdx, startIdx + pageSize);
+
+  resultsCount.textContent = videos.length;
+  if (videos.length === 0) {
+    videoGrid.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    paginationControls.classList.add('hidden');
+    return;
+  }
+
+  emptyState.classList.add('hidden');
+  videoGrid.innerHTML = currentPageRows.map(v => videoCard(v, ownerMapCache)).join('');
+
+  paginationControls.classList.toggle('hidden', totalPages <= 1);
+  pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+  prevBtn.classList.toggle('opacity-50', prevBtn.disabled);
+  nextBtn.classList.toggle('opacity-50', nextBtn.disabled);
+}
 
 async function loadVideos() {
   const searchInput = document.getElementById('search-input');
@@ -106,7 +157,19 @@ async function loadVideos() {
   if (category && category !== 'All') params.set('category', category);
 
   const data = await window.getJson(`/api/videos?${params.toString()}`);
-  if (data.__httpError) return;
+  if (data.__httpError) {
+    document.getElementById('loading-state').classList.add('hidden');
+    window.renderStateMessage('empty-state', {
+      type: 'error',
+      title: 'Unable to load videos',
+      message: 'Please refresh the page and try again.',
+      actionText: 'Retry',
+      actionId: 'retry-load-videos',
+    });
+    const retryBtn = document.getElementById('retry-load-videos');
+    if (retryBtn) retryBtn.addEventListener('click', () => loadVideos());
+    return;
+  }
 
   allVideosCache = data.videos;
   ownerMapCache = data.ownerMap || {};
@@ -136,20 +199,7 @@ async function loadVideos() {
     featuredSection.classList.add('hidden');
   }
 
-  // Video grid
-  const videoGrid = document.getElementById('video-grid');
-  const emptyState = document.getElementById('empty-state');
-  const resultsCount = document.getElementById('results-count');
-
-  resultsCount.textContent = data.videos.length;
-
-  if (data.videos.length === 0) {
-    videoGrid.innerHTML = '';
-    emptyState.classList.remove('hidden');
-  } else {
-    emptyState.classList.add('hidden');
-    videoGrid.innerHTML = data.videos.map(v => videoCard(v, ownerMapCache)).join('');
-  }
+  renderVideoGrid(data.videos || []);
 }
 
 // ── Init ─────────────────────────────────────────────────────
@@ -164,14 +214,38 @@ async function loadVideos() {
   let searchTimeout = null;
   document.getElementById('search-input').addEventListener('input', () => {
     clearTimeout(searchTimeout);
+    currentPage = 1;
     searchTimeout = setTimeout(loadVideos, 200);
   });
-  document.getElementById('category-filter').addEventListener('change', loadVideos);
+  document.getElementById('category-filter').addEventListener('change', () => {
+    currentPage = 1;
+    loadVideos();
+  });
+  document.getElementById('sort-filter').addEventListener('change', () => {
+    currentPage = 1;
+    renderVideoGrid(allVideosCache);
+  });
+  document.getElementById('page-size-filter').addEventListener('change', () => {
+    currentPage = 1;
+    renderVideoGrid(allVideosCache);
+  });
+  document.getElementById('page-prev-btn').addEventListener('click', () => {
+    if (currentPage > 1) currentPage -= 1;
+    renderVideoGrid(allVideosCache);
+  });
+  document.getElementById('page-next-btn').addEventListener('click', () => {
+    const pageSize = Number(document.getElementById('page-size-filter').value || 9);
+    const totalPages = Math.max(1, Math.ceil(allVideosCache.length / pageSize));
+    if (currentPage < totalPages) currentPage += 1;
+    renderVideoGrid(allVideosCache);
+  });
 
   // Reset filters button
   document.getElementById('reset-filters-btn').addEventListener('click', () => {
     document.getElementById('search-input').value = '';
     document.getElementById('category-filter').value = 'All';
+    document.getElementById('sort-filter').value = 'newest';
+    currentPage = 1;
     loadVideos();
   });
 })();

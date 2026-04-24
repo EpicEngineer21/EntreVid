@@ -16,15 +16,18 @@
   const videosList = document.getElementById('videos-list');
   const statTotal = document.getElementById('stat-total-videos');
 
-  loadingState.classList.remove('hidden');
+  window.setSectionLoading('loading-state', 'videos-list', true);
 
   const payload = await window.getJson('/api/my/videos');
 
-  loadingState.classList.add('hidden');
+  window.setSectionLoading('loading-state', 'videos-list', false);
 
   if (payload.__httpError || !payload.ok || !payload.data) {
-    emptyState.classList.remove('hidden');
-    emptyState.innerHTML = '<p class="text-red-400">Failed to load dashboard data. Please refresh.</p>';
+    window.renderStateMessage('empty-state', {
+      type: 'error',
+      title: 'Failed to load dashboard',
+      message: 'Please refresh and try again.',
+    });
     return;
   }
 
@@ -91,7 +94,11 @@
   // Delete Handlers
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      if (!confirm('Are you sure you want to delete this video? This cannot be undone.')) return;
+      const confirmed = await window.confirmAction({
+        title: 'Delete this video?',
+        message: 'This action cannot be undone.',
+      });
+      if (!confirmed) return;
       
       const prevHtml = btn.innerHTML;
       btn.innerHTML = '<div class="w-4 h-4 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin"></div>';

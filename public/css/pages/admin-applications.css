@@ -8,3 +8,12 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
+
+#apps-list > div {
+  box-shadow: 0 10px 30px -20px rgba(0, 0, 0, 0.6);
+}
+
+.reject-reason-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(92, 124, 250, 0.25);
+}

@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     default: 'user' 
   },
   verified: { type: Boolean, default: false },
+  profileImageUrl: { type: String, default: '' },
   failedLoginAttempts: { type: Number, default: 0 },
   lockUntil: { type: Date, default: null },
   emailVerifiedAt: { type: Date, default: null },

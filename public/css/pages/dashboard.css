@@ -8,3 +8,12 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
+
+#videos-list > div {
+  min-height: 13.5rem;
+}
+
+#videos-list .delete-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

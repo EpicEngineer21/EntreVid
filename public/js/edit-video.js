@@ -39,7 +39,7 @@
   // Populate form
   document.getElementById('title').value = v.title || '';
   document.getElementById('entrepreneur').value = v.entrepreneur || '';
-  document.getElementById('category').value = v.category || 'Interviews';
+  document.getElementById('category').value = v.category || 'Other';
   document.getElementById('description').value = v.description || '';
   document.getElementById('tags').value = (v.tags || []).join(', ');
   document.getElementById('youtubeUrl').value = v.youtubeUrl || '';
