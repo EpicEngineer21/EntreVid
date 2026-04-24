@@ -1,0 +1,8 @@
+/* Profile page specific polish */
+#profile-form input:read-only {
+  opacity: 0.85;
+}
+
+#profile-preview {
+  min-height: 1.25rem;
+}
