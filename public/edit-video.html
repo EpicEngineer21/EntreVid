@@ -1,60 +1,73 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edit Video | Entrepreneur Video Directory</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/pages/edit-video.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Edit Video | EntreVid</title>
+  <meta name="description" content="Edit your video submission on EntreVid."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/base.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
+  <style>
+    .ev-input {
+      width:100%;padding:12px 14px;background:#0b0d17;border:1.5px solid #262b3d;
+      border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;
+      transition:border-color 0.2s,box-shadow 0.2s;font-family:'Inter',sans-serif;
+    }
+    .ev-input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.12); }
+    .ev-input::placeholder { color:#8a91a8; }
+    textarea.ev-input { resize:vertical; }
+    select.ev-input { appearance:none; cursor:pointer; }
+    .ev-label { display:block; font-size:13px; font-weight:500; color:#8a91a8; margin-bottom:7px; }
+    .ev-section { background:#141826; border:1px solid #262b3d; border-radius:14px; padding:24px; margin-bottom:18px; }
+    .ev-section-title { font-family:'Sora',sans-serif; font-size:0.85rem; font-weight:700; color:#e6e8ef; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid #262b3d; }
+  </style>
 </head>
-<body class="bg-surface-950 text-gray-100 font-sans min-h-screen flex flex-col antialiased">
-  <nav id="main-nav" class="sticky top-0 z-50 backdrop-blur-xl bg-surface-950/80 border-b border-white/5"></nav>
+<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
 
-  <main class="flex-grow max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 relative z-10">
-    <div class="mb-10 flex items-center gap-4">
-      <a href="/dashboard" class="w-10 h-10 rounded-xl bg-surface-800 hover:bg-surface-700 text-gray-400 hover:text-white flex items-center justify-center transition-colors border border-surface-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+  <main style="flex:1;max-width:820px;margin:0 auto;padding:44px 24px;width:100%;box-sizing:border-box;">
+    <!-- Page header -->
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;">
+      <a href="/dashboard" style="width:38px;height:38px;background:#141826;border:1px solid #262b3d;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#8a91a8;text-decoration:none;flex-shrink:0;" onmouseover="this.style.color='#e6e8ef';this.style.borderColor='#6366f1'" onmouseout="this.style.color='#8a91a8';this.style.borderColor='#262b3d'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
       </a>
       <div>
-        <h1 class="font-display text-2xl sm:text-3xl font-bold text-white mb-1">Edit Video</h1>
-        <p class="text-gray-400 text-sm">Update the details of your video below.</p>
+        <h1 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:2px;">Edit Video</h1>
+        <p style="font-size:13px;color:#8a91a8;">Update the details of your video submission.</p>
       </div>
     </div>
 
-    <div id="loading-state" class="bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 p-10 rounded-3xl text-center shadow-xl">
-      <div class="w-10 h-10 mx-auto rounded-full border-2 border-brand-500/30 border-t-brand-500 animate-spin mb-4"></div>
-      <p class="text-gray-400">Loading video details...</p>
+    <!-- Loading skeleton -->
+    <div id="loading-state" style="background:#141826;border:1px solid #262b3d;border-radius:16px;padding:40px;text-align:center;">
+      <div style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(99,102,241,0.2);border-top-color:#6366f1;animation:spin 0.8s linear infinite;margin:0 auto 14px;"></div>
+      <p style="color:#8a91a8;font-size:14px;">Loading video details…</p>
     </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
-    <!-- Form -->
-    <form id="edit-form" class="hidden bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 p-6 sm:p-10 rounded-3xl shadow-xl space-y-8">
-      
-      <div id="error-box" class="hidden text-left bg-red-500/10 border border-red-500/20 rounded-xl p-4"></div>
+    <!-- Edit form -->
+    <form id="edit-form" class="hidden">
+      <div id="error-box" class="hidden" style="padding:12px 16px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#fb7185;font-size:14px;margin-bottom:20px;"></div>
 
-      <!-- General Info -->
-      <div>
-        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">General Details</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="md:col-span-2">
-            <label for="title" class="block text-sm font-medium text-gray-300 mb-1.5">Video Title <span class="text-red-400">*</span></label>
-            <input type="text" id="title" required class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
-          </div>
-
+      <!-- General Details -->
+      <div class="ev-section">
+        <p class="ev-section-title">General Details</p>
+        <div style="margin-bottom:16px;">
+          <label class="ev-label">Video Title <span style="color:#f43f5e;">*</span></label>
+          <input type="text" id="title" required class="ev-input" placeholder="A compelling title…"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
           <div>
-            <label for="entrepreneur" class="block text-sm font-medium text-gray-300 mb-1.5">Featured Entrepreneur <span class="text-red-400">*</span></label>
-            <input type="text" id="entrepreneur" required class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
+            <label class="ev-label">Featured Entrepreneur <span style="color:#f43f5e;">*</span></label>
+            <input type="text" id="entrepreneur" required class="ev-input" placeholder="Name of the founder"/>
           </div>
-
           <div>
-            <label for="category" class="block text-sm font-medium text-gray-300 mb-1.5">Category <span class="text-red-400">*</span></label>
-            <div class="relative">
-              <select id="category" required class="w-full pl-4 pr-10 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm">
+            <label class="ev-label">Category <span style="color:#f43f5e;">*</span></label>
+            <div style="position:relative;">
+              <select id="category" required class="ev-input">
                 <option value="E-commerce">E-commerce</option>
                 <option value="Finance">Finance</option>
                 <option value="Food">Food</option>
@@ -63,56 +76,70 @@
                 <option value="Tech">Tech</option>
                 <option value="Other">Other</option>
               </select>
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#8a91a8" stroke-width="2" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Content & Tags -->
-      <div>
-        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">Content</h3>
-        <div class="space-y-6">
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-300 mb-1.5">Description <span class="text-red-400">*</span></label>
-            <textarea id="description" required rows="4" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm resize-y"></textarea>
-          </div>
-
-          <div>
-            <label for="tags" class="block text-sm font-medium text-gray-300 mb-1.5">Tags (Comma separated)</label>
-            <input type="text" id="tags" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
-          </div>
+      <!-- Content -->
+      <div class="ev-section">
+        <p class="ev-section-title">Content</p>
+        <div style="margin-bottom:16px;">
+          <label class="ev-label">Description <span style="color:#f43f5e;">*</span></label>
+          <textarea id="description" required rows="4" class="ev-input" placeholder="Summarise what this video covers…"></textarea>
         </div>
-      </div>
-
-      <!-- Media Link -->
-      <div>
-        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">Media</h3>
         <div>
-          <label for="youtubeUrl" class="block text-sm font-medium text-gray-300 mb-1.5">YouTube URL <span class="text-red-400">*</span></label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-            </div>
-            <input type="url" id="youtubeUrl" required class="w-full pl-11 pr-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" />
+          <label class="ev-label">Tags <span style="color:#8a91a8;font-weight:400;">(comma separated)</span></label>
+          <input type="text" id="tags" class="ev-input" placeholder="e.g. startup, fundraising, SaaS"/>
+        </div>
+      </div>
+
+      <!-- Media -->
+      <div class="ev-section">
+        <p class="ev-section-title">Media</p>
+        <div>
+          <label class="ev-label">YouTube URL <span style="color:#f43f5e;">*</span></label>
+          <div style="position:relative;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff0000" viewBox="0 0 24 24" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+            <input type="url" id="youtubeUrl" required class="ev-input" style="padding-left:38px;" placeholder="https://www.youtube.com/watch?v=…"/>
           </div>
         </div>
+      </div>
+
+      <!-- Admin only: featured toggle -->
+      <div id="admin-section" class="hidden ev-section">
+        <p class="ev-section-title">Admin Controls</p>
+        <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+          <div style="position:relative;width:44px;height:24px;">
+            <input type="checkbox" id="featured" style="opacity:0;position:absolute;width:100%;height:100%;margin:0;cursor:pointer;z-index:1;"/>
+            <div id="toggle-track" style="width:44px;height:24px;background:#262b3d;border-radius:12px;transition:background 0.2s;"></div>
+            <div id="toggle-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.4);"></div>
+          </div>
+          <span style="font-size:14px;color:#e6e8ef;">Mark as Featured</span>
+        </label>
       </div>
 
       <!-- Actions -->
-      <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-800">
-        <a href="/dashboard" class="px-5 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-white font-medium border border-surface-700 transition-all text-sm">Cancel</a>
-        <button type="submit" id="save-btn" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-all shadow-[0_0_20px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 text-sm inline-flex items-center gap-2">
-          Save Changes
-        </button>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;padding-top:8px;">
+        <a href="/dashboard" style="padding:11px 22px;background:#1c2030;border:1px solid #262b3d;border-radius:10px;color:#8a91a8;font-size:14px;font-weight:500;text-decoration:none;">Cancel</a>
+        <button type="submit" id="save-btn" style="padding:11px 28px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 0 20px rgba(99,102,241,0.25);">Save Changes</button>
       </div>
     </form>
   </main>
-  
-  <footer id="app-footer" class="mt-auto border-t border-white/5 bg-surface-950/50"></footer>
+
+  <footer id="app-footer" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(11,13,23,0.6);"></footer>
   <script src="/js/common.js?v=6"></script>
   <script src="/js/edit-video.js?v=4"></script>
+  <script>
+    // Featured toggle visual
+    const cb = document.getElementById('featured');
+    const track = document.getElementById('toggle-track');
+    const thumb = document.getElementById('toggle-thumb');
+    if(cb) cb.addEventListener('change', () => {
+      track.style.background = cb.checked ? '#6366f1' : '#262b3d';
+      thumb.style.left = cb.checked ? '23px' : '3px';
+    });
+  </script>
 </body>
 </html>

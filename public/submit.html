@@ -1,112 +1,174 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Submit Video | Entrepreneur Video Directory</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/pages/submit.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Submit a Video | EntreVid</title>
+  <meta name="description" content="Share an entrepreneurial video with the EntreVid community."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/base.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
+  <style>
+    .ev-input {
+      width:100%;padding:12px 14px;background:#0b0d17;border:1.5px solid #262b3d;
+      border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;
+      transition:border-color 0.2s,box-shadow 0.2s;font-family:'Inter',sans-serif;
+    }
+    .ev-input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.12); }
+    .ev-input::placeholder { color:#8a91a8; }
+    textarea.ev-input { resize:vertical; }
+    select.ev-input { appearance:none; cursor:pointer; }
+    .ev-label { display:block; font-size:13px; font-weight:500; color:#8a91a8; margin-bottom:7px; }
+    .ev-section { background:#141826; border:1px solid #262b3d; border-radius:14px; padding:24px; margin-bottom:18px; }
+    .ev-section-title { font-family:'Sora',sans-serif; font-size:0.85rem; font-weight:700; color:#e6e8ef; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid #262b3d; }
+    /* Step indicator */
+    .step-dot { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:'Sora',sans-serif;flex-shrink:0; }
+    .step-dot.active { background:linear-gradient(135deg,#6366f1,#a855f7); color:#fff; }
+    .step-dot.done { background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); }
+    .step-dot.pending { background:#1c2030; color:#8a91a8; border:1px solid #262b3d; }
+  </style>
 </head>
-<body class="bg-surface-950 text-gray-100 font-sans min-h-screen flex flex-col antialiased">
-  <nav id="main-nav" class="sticky top-0 z-50 backdrop-blur-xl bg-surface-950/80 border-b border-white/5"></nav>
+<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
 
-  <main class="flex-grow max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 relative z-10">
-    <div class="mb-10 text-center">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-500/10 text-brand-400 mb-6 border border-brand-500/20 shadow-[0_0_30px_-5px_rgba(99,102,241,0.3)]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-      </div>
-      <h1 class="font-display text-3xl font-bold text-white mb-3">Submit a Video</h1>
-      <p class="text-gray-400">Share compelling stories, interviews, and strategies with the community.</p>
+  <main style="flex:1;max-width:820px;margin:0 auto;padding:48px 24px;width:100%;box-sizing:border-box;">
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:36px;">
+      <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));border:1px solid rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;">🎬</div>
+      <h1 style="font-family:'Sora',sans-serif;font-size:1.75rem;font-weight:800;color:#fff;margin-bottom:6px;">Submit a Video</h1>
+      <p style="color:#8a91a8;font-size:15px;">Share compelling entrepreneur stories, interviews, and strategies with the community.</p>
     </div>
 
-    <!-- Form -->
-    <form id="submit-form" class="bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 p-6 sm:p-10 rounded-3xl shadow-xl space-y-8">
-      
-      <div id="error-box" class="hidden text-left bg-red-500/10 border border-red-500/20 rounded-xl p-4"></div>
+    <!-- Step progress -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:32px;max-width:420px;margin-left:auto;margin-right:auto;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div class="step-dot active" id="step1-dot">1</div>
+        <span style="font-size:11px;color:#818cf8;font-weight:500;">Details</span>
+      </div>
+      <div style="flex:1;height:2px;background:linear-gradient(to right,#6366f1,#262b3d);margin:0 6px 16px;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div class="step-dot pending" id="step2-dot">2</div>
+        <span style="font-size:11px;color:#8a91a8;" id="step2-label">Preview</span>
+      </div>
+      <div style="flex:1;height:2px;background:#262b3d;margin:0 6px 16px;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <div class="step-dot pending" id="step3-dot">3</div>
+        <span style="font-size:11px;color:#8a91a8;" id="step3-label">Done</span>
+      </div>
+    </div>
 
-      <!-- General Info -->
-      <div>
-        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">General Details</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="md:col-span-2">
-            <label for="title" class="block text-sm font-medium text-gray-300 mb-1.5">Video Title <span class="text-red-400">*</span></label>
-            <input type="text" id="title" required class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" placeholder="A catchy title for the video" />
+    <!-- Error -->
+    <div id="error-box" class="hidden" style="padding:12px 16px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#fb7185;font-size:14px;margin-bottom:20px;"></div>
+
+    <!-- STEP 1: Form -->
+    <div id="step-form">
+      <form id="submit-form">
+        <!-- General Info -->
+        <div class="ev-section">
+          <p class="ev-section-title">General Details</p>
+          <div style="margin-bottom:16px;">
+            <label class="ev-label">Video Title <span style="color:#f43f5e;">*</span></label>
+            <input type="text" id="title" required class="ev-input" placeholder="A catchy, descriptive title"/>
           </div>
-
-          <div>
-            <label for="entrepreneur" class="block text-sm font-medium text-gray-300 mb-1.5">Featured Entrepreneur <span class="text-red-400">*</span></label>
-            <input type="text" id="entrepreneur" required class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" placeholder="Name of the founder" />
-          </div>
-
-          <div>
-            <label for="category" class="block text-sm font-medium text-gray-300 mb-1.5">Category <span class="text-red-400">*</span></label>
-            <div class="relative">
-              <select id="category" required class="w-full pl-4 pr-10 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm">
-                <option value="" disabled selected>Select a category</option>
-                <option value="E-commerce">E-commerce</option>
-                <option value="Finance">Finance</option>
-                <option value="Food">Food</option>
-                <option value="Health">Health</option>
-                <option value="Interviews">Interviews</option>
-                <option value="Tech">Tech</option>
-                <option value="Other">Other</option>
-              </select>
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div>
+              <label class="ev-label">Featured Entrepreneur <span style="color:#f43f5e;">*</span></label>
+              <input type="text" id="entrepreneur" required class="ev-input" placeholder="Name of the founder"/>
+            </div>
+            <div>
+              <label class="ev-label">Category <span style="color:#f43f5e;">*</span></label>
+              <div style="position:relative;">
+                <select id="category" required class="ev-input">
+                  <option value="" disabled selected>Select a category</option>
+                  <option value="E-commerce">E-commerce</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Food">Food</option>
+                  <option value="Health">Health</option>
+                  <option value="Interviews">Interviews</option>
+                  <option value="Tech">Tech</option>
+                  <option value="Other">Other</option>
+                </select>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#8a91a8" stroke-width="2" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Content & Tags -->
-      <div>
-        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">Content</h3>
-        <div class="space-y-6">
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-300 mb-1.5">Description <span class="text-red-400">*</span></label>
-            <textarea id="description" required rows="4" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm resize-y" placeholder="Briefly summarize what this video covers..."></textarea>
+        <!-- Content -->
+        <div class="ev-section">
+          <p class="ev-section-title">Content</p>
+          <div style="margin-bottom:16px;">
+            <label class="ev-label">Description <span style="color:#f43f5e;">*</span></label>
+            <textarea id="description" required rows="4" class="ev-input" placeholder="Briefly summarise what this video covers…"></textarea>
           </div>
-
           <div>
-            <label for="tags" class="block text-sm font-medium text-gray-300 mb-1.5">Tags (Comma separated)</label>
-            <input type="text" id="tags" class="w-full px-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" placeholder="e.g. startup, fundraising, marketing" />
+            <label class="ev-label">Tags <span style="color:#8a91a8;font-weight:400;">(comma separated)</span></label>
+            <input type="text" id="tags" class="ev-input" placeholder="e.g. startup, fundraising, marketing"/>
           </div>
         </div>
-      </div>
 
-      <!-- Media Link -->
-      <div>
-        <h3 class="text-lg font-bold text-white border-b border-surface-700 pb-2 mb-4">Media</h3>
-        <div>
-          <label for="youtubeUrl" class="block text-sm font-medium text-gray-300 mb-1.5">YouTube URL <span class="text-red-400">*</span></label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+        <!-- Media + Live preview -->
+        <div class="ev-section">
+          <p class="ev-section-title">Media</p>
+          <div style="margin-bottom:16px;">
+            <label class="ev-label">YouTube URL <span style="color:#f43f5e;">*</span></label>
+            <div style="position:relative;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff0000" viewBox="0 0 24 24" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+              <input type="url" id="youtubeUrl" required class="ev-input" style="padding-left:38px;" placeholder="https://www.youtube.com/watch?v=…"/>
             </div>
-            <input type="url" id="youtubeUrl" required class="w-full pl-11 pr-4 py-3 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm" placeholder="https://www.youtube.com/watch?v=..." />
           </div>
+          <!-- Live thumbnail preview -->
+          <div id="yt-preview" class="hidden" style="border-radius:12px;overflow:hidden;background:#0b0d17;border:1px solid #262b3d;">
+            <div style="position:relative;padding-bottom:56.25%;">
+              <img id="yt-thumb" src="" alt="Video thumbnail" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                <div style="width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+            </div>
+            <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style="font-size:12px;color:#34d399;font-weight:500;">Video found — thumbnail preview loaded</span>
+            </div>
+          </div>
+          <div id="yt-invalid" class="hidden" style="margin-top:8px;padding:8px 12px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);border-radius:8px;font-size:12px;color:#fb7185;">⚠️ Couldn't parse a valid YouTube video ID from this URL.</div>
         </div>
-      </div>
 
-      <!-- Actions -->
-      <div class="flex items-center justify-end gap-3 pt-4 border-t border-surface-800">
-        <a href="/dashboard" class="px-5 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-white font-medium border border-surface-700 transition-all text-sm">Cancel</a>
-        <button type="submit" id="submit-btn" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-all shadow-[0_0_20px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 text-sm inline-flex items-center gap-2">
-          Submit Video
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
-        </button>
+        <!-- Actions -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <a href="/dashboard" style="padding:11px 22px;background:#1c2030;border:1px solid #262b3d;border-radius:10px;color:#8a91a8;font-size:14px;font-weight:500;text-decoration:none;">Cancel</a>
+          <button type="submit" id="submit-btn" style="padding:11px 32px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 0 20px rgba(99,102,241,0.25);">
+            Submit Video →
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 2: Submitting -->
+    <div id="step-submitting" class="hidden" style="text-align:center;padding:60px 20px;">
+      <div style="width:48px;height:48px;border-radius:50%;border:3px solid rgba(99,102,241,0.2);border-top-color:#6366f1;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>
+      <p style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;color:#fff;">Submitting your video…</p>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+    <!-- STEP 3: Success -->
+    <div id="step-success" class="hidden" style="text-align:center;padding:60px 20px;">
+      <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+      <h2 style="font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin-bottom:10px;">Video Submitted!</h2>
+      <p style="color:#8a91a8;font-size:15px;margin-bottom:32px;max-width:380px;margin-left:auto;margin-right:auto;">Your video is pending review and will appear in the directory once approved.</p>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <a href="/dashboard" style="padding:12px 24px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-weight:600;font-size:14px;text-decoration:none;">Go to Dashboard</a>
+        <button id="submit-another-btn" style="padding:12px 24px;background:#1c2030;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-weight:500;font-size:14px;cursor:pointer;">Submit Another</button>
       </div>
-    </form>
+    </div>
   </main>
-  
-  <footer id="app-footer" class="mt-auto border-t border-white/5 bg-surface-950/50"></footer>
+
+  <footer id="app-footer" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(11,13,23,0.6);"></footer>
   <script src="/js/common.js?v=6"></script>
-  <script src="/js/submit.js?v=2"></script>
+  <script src="/js/submit.js?v=3"></script>
 </body>
 </html>
