@@ -96,69 +96,60 @@ window.initAppContext = async function initAppContext() {
 
 // ── Flash messages ───────────────────────────────────────────
 window.showFlash = function showFlash(type, message) {
-  // Remove any existing flash
   const existing = document.getElementById('flash-container');
   if (existing) existing.remove();
 
   const isSuccess = type === 'success';
-  const bgClass = isSuccess ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-red-500/10 border-red-500/20 text-red-300';
-  const iconColor = isSuccess ? 'text-emerald-400' : 'text-red-400';
+  const bg   = isSuccess ? 'rgba(16,185,129,0.12)' : 'rgba(244,63,94,0.12)';
+  const border = isSuccess ? 'rgba(16,185,129,0.3)'  : 'rgba(244,63,94,0.3)';
+  const color  = isSuccess ? '#34d399' : '#fb7185';
   const iconPath = isSuccess
     ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'
     : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
-  const dismissColor = isSuccess ? 'text-emerald-400/60 hover:text-emerald-300' : 'text-red-400/60 hover:text-red-300';
 
   const container = document.createElement('div');
   container.id = 'flash-container';
-  container.className = 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4';
+  container.style.cssText = `position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:9999;max-width:480px;width:calc(100% - 48px);animation:flashIn 0.3s ease;`;
   container.innerHTML = `
-    <div class="flash-msg ${bgClass} border px-5 py-3.5 rounded-xl flex items-center justify-between backdrop-blur-sm">
-      <div class="flex items-center gap-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ${iconColor} flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">${iconPath}</svg>
-        <span class="text-sm font-medium">${escapeHtml(message)}</span>
+    <style>@keyframes flashIn{from{opacity:0;transform:translateX(-50%) translateY(-12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}</style>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;background:${bg};border:1px solid ${border};border-radius:12px;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="${color}" stroke-width="2" style="flex-shrink:0;">${iconPath}</svg>
+        <span style="font-size:14px;font-weight:500;color:${color};font-family:'Inter',sans-serif;">${window.escapeHtml(message)}</span>
       </div>
-      <button class="${dismissColor} transition-colors" onclick="this.closest('#flash-container').remove()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <button onclick="document.getElementById('flash-container').remove()" style="background:none;border:none;cursor:pointer;color:${color};opacity:0.7;padding:2px;flex-shrink:0;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
-    </div>
-  `;
+    </div>`;
 
-  // Insert after nav
-  const nav = document.getElementById('main-nav');
-  if (nav) {
-    nav.after(container);
-  } else {
-    document.body.prepend(container);
-  }
+  document.body.appendChild(container);
 
-  // Auto-dismiss after 5s
   setTimeout(() => {
     if (container.parentElement) {
       container.style.opacity = '0';
-      container.style.transform = 'translateY(-10px)';
-      container.style.transition = 'all 0.3s ease';
+      container.style.transition = 'opacity 0.3s ease';
       setTimeout(() => container.remove(), 300);
     }
-  }, 5000);
+  }, 4500);
 };
 
-// ── Show error list (inside a container element) ─────────────
+// ── Show error list (inline, no Tailwind) ───────────────────────
 window.showErrors = function showErrors(containerId, errors) {
   const container = document.getElementById(containerId);
   if (!container) return;
   if (!errors || errors.length === 0) {
-    container.classList.add('hidden');
+    container.style.display = 'none';
     container.innerHTML = '';
     return;
   }
-  container.classList.remove('hidden');
+  container.style.display = 'block';
+  const list = Array.isArray(errors) ? errors : [errors];
   container.innerHTML = `
-    <div class="flex items-start gap-3">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <ul class="text-sm text-red-400/90 space-y-1">
-        ${(Array.isArray(errors) ? errors : [errors]).map(e => `<li>${escapeHtml(e)}</li>`).join('')}
+    <div style="display:flex;align-items:flex-start;gap:10px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#fb7185" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <ul style="font-size:13px;color:#fb7185;list-style:none;padding:0;margin:0;">
+        ${list.map(e => `<li>${window.escapeHtml(e)}</li>`).join('')}
       </ul>
-    </div>
   `;
 };
 
