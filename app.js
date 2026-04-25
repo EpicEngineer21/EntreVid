@@ -939,7 +939,14 @@ app.post('/api/auth/reset-password', rl.resetPassword, async (req, res) => {
 // ── Video: Single ────────────────────────────────────────────
 app.get('/api/videos/:id', async (req, res) => {
   try {
-    const video = await Video.findOne({ id: req.params.id });
+    // Try custom id field first (e.g. "v_new2_xxx"), then fall back to MongoDB _id
+    let video = await Video.findOne({ id: req.params.id });
+    if (!video) {
+      const mongoose = require('mongoose');
+      if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+        video = await Video.findById(req.params.id);
+      }
+    }
     if (!video) return res.status(404).json({ ok: false, errors: ['Video not found.'] });
 
     const owner = video.ownerUserId ? await User.findOne({ id: video.ownerUserId }) : null;

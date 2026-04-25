@@ -7,7 +7,7 @@ function cardHtml(v) {
   const cat = window.escapeHtml(v.category || 'Uncategorized');
   const title = window.escapeHtml(v.title || 'Untitled');
   const founder = window.escapeHtml(v.entrepreneur || v.founderName || '');
-  const videoId = window.escapeHtml(v._id || v.id || '');
+  const videoId = window.escapeHtml(v.id || v._id || '');
   return `
     <a href="/video-details.html?id=${videoId}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:16px;overflow:hidden;transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;"
       onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(0,0,0,0.4)';this.style.borderColor='rgba(99,102,241,0.3)'"

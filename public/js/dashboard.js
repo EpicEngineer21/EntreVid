@@ -53,11 +53,11 @@
     try {
       const data = await window.getJson('/api/videos');
       const allVids = data.videos || [];
-      const recent = history.slice(-4).reverse().map(id => allVids.find(v => (v._id||v.id) === id)).filter(Boolean);
+      const recent = history.slice(-4).reverse().map(id => allVids.find(v => (v.id||v._id) === id)).filter(Boolean);
       if (recent.length) {
         cwEl.innerHTML = recent.map(v => {
           const ytId = window.extractYouTubeId(v.youtubeUrl||v.youtubeId||v.id);
-          return `<a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          return `<a href="/video-details.html?id=${window.escapeHtml(v.id||v._id||'')}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
             <div style="aspect-ratio:16/9;background:#0b0d17;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:''}</div>
             <div style="padding:10px;"><p style="font-size:13px;font-weight:500;color:#e6e8ef;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${window.escapeHtml(v.title||'')}</p></div>
           </a>`;
@@ -103,7 +103,7 @@
             <td style="padding:14px;"><div style="display:flex;align-items:center;gap:10px;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/default.jpg" style="width:56px;height:40px;object-fit:cover;border-radius:6px;" loading="lazy"/>`:'<div style="width:56px;height:40px;background:#1c2030;border-radius:6px;"></div>'}<span style="font-weight:500;color:#e6e8ef;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;max-width:200px;">${window.escapeHtml(v.title||'')}</span></div></td>
             <td style="padding:14px;"><span style="padding:3px 10px;background:rgba(99,102,241,0.1);border-radius:6px;font-size:12px;color:#818cf8;">${window.escapeHtml(v.category||'')}</span></td>
             <td style="padding:14px;color:#8a91a8;">${dateStr}</td>
-            <td style="padding:14px;"><div style="display:flex;gap:8px;"><a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="padding:6px 12px;background:#1c2030;border:1px solid #262b3d;border-radius:8px;color:#e6e8ef;font-size:12px;font-weight:500;text-decoration:none;">View</a><button class="delete-btn" data-id="${window.escapeHtml(v._id||v.id||'')}" style="padding:6px 12px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);border-radius:8px;color:#f43f5e;font-size:12px;cursor:pointer;">Delete</button></div></td>
+            <td style="padding:14px;"><div style="display:flex;gap:8px;"><a href="/video-details.html?id=${window.escapeHtml(v.id||v._id||'')}" style="padding:6px 12px;background:#1c2030;border:1px solid #262b3d;border-radius:8px;color:#e6e8ef;font-size:12px;font-weight:500;text-decoration:none;">View</a><button class="delete-btn" data-id="${window.escapeHtml(v.id||v._id||'')}" style="padding:6px 12px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);border-radius:8px;color:#f43f5e;font-size:12px;cursor:pointer;">Delete</button></div></td>
           </tr>`;
         }).join('')}</tbody>
       </table></div>`;
@@ -132,12 +132,12 @@
     try {
       const data = await window.getJson('/api/videos');
       const all = data.videos||[];
-      const saved = ids.map(id=>all.find(v=>(v._id||v.id)===id)).filter(Boolean);
+      const saved = ids.map(id=>all.find(v=>(v.id||v._id)===id)).filter(Boolean);
       if (!saved.length) { emptyEl?.classList.remove('hidden'); return; }
       emptyEl?.classList.add('hidden');
       gridEl.innerHTML = saved.map(v=>{
         const ytId=window.extractYouTubeId(v.youtubeUrl||v.youtubeId||v.id);
-        return `<a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+        return `<a href="/video-details.html?id=${window.escapeHtml(v.id||v._id||'')}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
           <div style="aspect-ratio:16/9;background:#0b0d17;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:''}</div>
           <div style="padding:12px;"><span style="display:inline-block;padding:2px 8px;background:rgba(99,102,241,0.1);border-radius:6px;font-size:11px;color:#818cf8;margin-bottom:6px;">${window.escapeHtml(v.category||'')}</span><p style="font-size:13px;font-weight:500;color:#e6e8ef;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${window.escapeHtml(v.title||'')}</p></div>
         </a>`;
@@ -157,12 +157,12 @@
     try {
       const data = await window.getJson('/api/videos');
       const all = data.videos||[];
-      const seen = ids.slice().reverse().map(id=>all.find(v=>(v._id||v.id)===id)).filter(Boolean);
+      const seen = ids.slice().reverse().map(id=>all.find(v=>(v.id||v._id)===id)).filter(Boolean);
       if (!seen.length) { emptyEl?.classList.remove('hidden'); return; }
       emptyEl?.classList.add('hidden');
       listEl.innerHTML = seen.map(v=>{
         const ytId=window.extractYouTubeId(v.youtubeUrl||v.youtubeId||v.id);
-        return `<a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="display:flex;align-items:center;gap:16px;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;padding:12px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='#262b3d'">
+        return `<a href="/video-details.html?id=${window.escapeHtml(v.id||v._id||'')}" style="display:flex;align-items:center;gap:16px;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;padding:12px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='#262b3d'">
           <div style="width:80px;height:56px;border-radius:8px;overflow:hidden;background:#0b0d17;flex-shrink:0;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/default.jpg" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:'<div></div>'}</div>
           <div><p style="font-size:14px;font-weight:500;color:#e6e8ef;margin-bottom:4px;">${window.escapeHtml(v.title||'')}</p><p style="font-size:12px;color:#8a91a8;">${window.escapeHtml(v.entrepreneur||'')} · ${window.escapeHtml(v.category||'')}</p></div>
         </a>`;

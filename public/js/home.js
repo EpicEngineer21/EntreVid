@@ -11,7 +11,7 @@ function cardHtml(v) {
   const cat = window.escapeHtml(v.category || 'Uncategorized');
   const title = window.escapeHtml(v.title || 'Untitled');
   const founder = window.escapeHtml(v.entrepreneur || v.founderName || '');
-  const videoId = window.escapeHtml(v._id || v.id || '');
+  const videoId = window.escapeHtml(v.id || v._id || '');
 
   return `
     <a href="/video-details.html?id=${videoId}" class="video-card" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:16px;overflow:hidden;transition:transform 0.25s ease,box-shadow 0.25s ease,border-color 0.25s ease;"
@@ -161,7 +161,7 @@ const CAT_COLORS = {
               <h3 style="font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:12px;line-height:1.3;">${window.escapeHtml(spot.title)}</h3>
               <p style="color:#8a91a8;font-size:15px;margin-bottom:8px;">by <strong style="color:#e6e8ef;">${window.escapeHtml(spot.entrepreneur || '')}</strong></p>
               <p style="color:#8a91a8;font-size:14px;margin-bottom:24px;line-height:1.6;">${window.escapeHtml((spot.description || '').slice(0, 140))}…</p>
-              <a href="/video-details.html?id=${window.escapeHtml(spot._id || spot.id || '')}" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-weight:600;font-size:14px;text-decoration:none;">
+              <a href="/video-details.html?id=${window.escapeHtml(spot.id || spot._id || '')}" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-weight:600;font-size:14px;text-decoration:none;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 Watch Now
               </a>
