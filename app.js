@@ -447,9 +447,49 @@ function getIp(req) {
 // AUTH ROUTES
 // ============================================================
 
+// ── New static page routes ────────────────────────────────────
+app.get('/browse',           (req, res) => res.sendFile('browse.html',          { root: PUBLIC_DIR }));
+app.get('/founders',         (req, res) => res.sendFile('founders.html',         { root: PUBLIC_DIR }));
+app.get('/founder-profile',  (req, res) => res.sendFile('founder-profile.html',  { root: PUBLIC_DIR }));
+app.get('/about',            (req, res) => res.sendFile('about.html',            { root: PUBLIC_DIR }));
+app.get('/contact',          (req, res) => res.sendFile('contact.html',          { root: PUBLIC_DIR }));
+
+// ── Contact form API ──────────────────────────────────────────
+app.post('/api/contact', makeLimit(60*60*1000, 5, 'Too many contact requests. Please try again in 1 hour.'), async (req, res) => {
+  try {
+    const name    = (req.body.name    || '').trim();
+    const email   = (req.body.email   || '').trim().toLowerCase();
+    const topic   = (req.body.topic   || '').trim();
+    const message = (req.body.message || '').trim();
+
+    const errors = [];
+    if (!name)                                           errors.push('Name is required.');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('Valid email required.');
+    if (!topic)                                          errors.push('Topic is required.');
+    if (!message || message.length < 10)                 errors.push('Message must be at least 10 characters.');
+    if (errors.length) return res.status(400).json({ ok: false, errors });
+
+    if (EMAIL_CONFIGURED && transporter) {
+      await transporter.sendMail({
+        from: `"EntreVid Contact" <${EMAIL_FROM}>`,
+        to: EMAIL_FROM,
+        replyTo: `"${name}" <${email}>`,
+        subject: `[EntreVid Contact] ${topic}`,
+        text: `From: ${name} <${email}>\nTopic: ${topic}\n\n${message}`,
+      });
+    }
+    await logAudit('CONTACT_FORM', { email, ip: getIp(req), userAgent: req.headers['user-agent'], meta: { topic } });
+    res.json({ ok: true, message: 'Message sent! We\'ll get back to you within 24 hours.' });
+  } catch (err) {
+    console.error('Contact form error:', err);
+    res.status(500).json({ ok: false, errors: ['Failed to send message. Please try again.'] });
+  }
+});
+
 // ============================================================
 // JSON API ROUTES (Phase 1: Home + Login + Signup)
 // ============================================================
+
 
 app.get('/api/csrf', (req, res) => {
   res.json({ csrfToken: req.session.csrfToken });

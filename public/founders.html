@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Founders Directory | EntreVid</title>
+  <meta name="description" content="Explore the founders and entrepreneurs behind EntreVid's curated video library. Search by name and discover their full story." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+</head>
+<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
+
+  <main style="flex:1;max-width:1280px;margin:0 auto;padding:64px 24px;width:100%;">
+    <!-- Header -->
+    <div class="fade-up" style="text-align:center;margin-bottom:56px;">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);margin-bottom:20px;">
+        <span style="font-size:13px;font-weight:500;color:#a5b4fc;">Founders &amp; Entrepreneurs</span>
+      </div>
+      <h1 style="font-family:'Sora',sans-serif;font-size:2.5rem;font-weight:800;color:#fff;margin-bottom:12px;">Founders Directory</h1>
+      <p style="color:#8a91a8;font-size:16px;max-width:540px;margin:0 auto;">The brilliant minds behind the stories. Explore founders and discover their video journeys.</p>
+    </div>
+
+    <!-- Search -->
+    <div class="fade-up" style="max-width:480px;margin:0 auto 48px;position:relative;">
+      <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#8a91a8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="founder-search" placeholder="Search founders by name…" style="width:100%;padding:14px 16px 14px 46px;background:#141826;border:1px solid #262b3d;border-radius:12px;color:#e6e8ef;font-size:15px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'" />
+    </div>
+
+    <!-- Loading / Grid -->
+    <div id="loading-state" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;">
+      <div class="skeleton" style="border-radius:16px;height:200px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:200px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:200px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:200px;"></div>
+    </div>
+
+    <div id="founders-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;"></div>
+
+    <div id="empty-state" class="hidden" style="text-align:center;padding:80px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">👤</div>
+      <h3 style="font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:8px;">No founders found</h3>
+      <p style="color:#8a91a8;font-size:14px;">Try a different search term.</p>
+    </div>
+  </main>
+
+  <footer id="app-footer" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(11,13,23,0.6);"></footer>
+
+  <script src="/js/common.js?v=6"></script>
+  <script src="/js/founders.js?v=1"></script>
+</body>
+</html>

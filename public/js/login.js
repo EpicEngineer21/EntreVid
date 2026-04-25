@@ -3,40 +3,33 @@
  */
 (async function initLogin() {
   await window.initAppContext();
-
-  // If already logged in, redirect home
-  if (window.App.currentUser) {
-    window.location.href = '/';
-    return;
-  }
-
+  if (window.App.currentUser) { window.location.href = '/'; return; }
   window.renderNav(window.App.currentUser, 'login');
-  window.renderFooter();
+
+  document.getElementById('google-btn')?.addEventListener('click', () => {
+    window.showFlash('error', 'Google Sign-In coming soon. Please use email login for now.');
+  });
 
   const form = document.getElementById('login-form');
-  const submitBtn = document.getElementById('submit-btn');
-  const errorBox = document.getElementById('error-box');
+  const submitBtn = document.getElementById('login-btn');
+  const errText = document.getElementById('error-text');
+  const errBox = document.getElementById('error-container');
 
-  form.addEventListener('submit', async (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    errorBox.classList.add('hidden');
-
-    const originalHtml = submitBtn.innerHTML;
+    errBox?.classList.add('hidden');
+    const orig = submitBtn.innerHTML;
     window.setButtonLoading(submitBtn, true);
-
-    const payload = {
+    const { res, data } = await window.postJson('/api/auth/login', {
       email: document.getElementById('email').value,
       password: document.getElementById('password').value,
-    };
-
-    const { res, data } = await window.postJson('/api/auth/login', payload);
-
+    });
     if (!res.ok || !data.ok) {
-      window.setButtonLoading(submitBtn, false, originalHtml);
-      window.showErrors('error-box', data.errors || ['Login failed. Please try again.']);
+      window.setButtonLoading(submitBtn, false, orig);
+      if (errText) errText.textContent = (data.errors && data.errors[0]) || 'Login failed.';
+      errBox?.classList.remove('hidden');
       return;
     }
-
     window.location.href = data.next || '/';
   });
 })();

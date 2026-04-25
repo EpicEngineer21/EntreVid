@@ -1,103 +1,184 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard | Entrepreneur Video Directory</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/pages/dashboard.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dashboard | EntreVid</title>
+  <meta name="description" content="Manage your EntreVid profile, submissions, watchlist, and settings."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/base.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
+  <link rel="stylesheet" href="/css/pages/dashboard.css"/>
+  <style>
+    .dash-sidebar{width:240px;min-width:240px;background:#141826;border-right:1px solid #262b3d;display:flex;flex-direction:column;padding:24px 16px;gap:4px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+    .dash-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;border:none;background:none;color:#8a91a8;font-size:14px;font-weight:500;width:100%;text-align:left;transition:all 0.2s;}
+    .dash-nav-item:hover{background:rgba(255,255,255,0.05);color:#e6e8ef;}
+    .dash-nav-item.active{background:rgba(99,102,241,0.12);color:#818cf8;border:1px solid rgba(99,102,241,0.2);}
+    .dash-section{display:none;} .dash-section.active{display:block;}
+    @media(max-width:768px){.dash-sidebar{display:none;} .dash-mobile-tabs{display:flex!important;}}
+  </style>
 </head>
-<body class="bg-surface-950 text-gray-100 font-sans min-h-screen flex flex-col antialiased">
-  <nav id="main-nav" class="sticky top-0 z-50 backdrop-blur-xl bg-surface-950/80 border-b border-white/5"></nav>
+<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
 
-  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 relative z-10">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-      <div>
-        <h1 class="font-display text-3xl font-bold text-white mb-2">My Dashboard</h1>
-        <p class="text-gray-400">Manage your submitted videos and view engagement stats.</p>
-      </div>
-      <a href="/submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium transition-all shadow-[0_0_15px_-3px_rgba(79,70,229,0.4)]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+  <!-- Mobile tabs -->
+  <div class="dash-mobile-tabs" style="display:none;overflow-x:auto;border-bottom:1px solid #262b3d;background:#141826;padding:0 16px;">
+    <div style="display:flex;gap:4px;min-width:max-content;padding:8px 0;">
+      <button class="dash-tab" data-section="overview" style="padding:8px 16px;border-radius:8px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.2);color:#818cf8;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;">Overview</button>
+      <button class="dash-tab" data-section="watchlist" style="padding:8px 16px;border-radius:8px;background:none;border:1px solid transparent;color:#8a91a8;font-size:13px;cursor:pointer;white-space:nowrap;">Watchlist</button>
+      <button class="dash-tab" data-section="submissions" style="padding:8px 16px;border-radius:8px;background:none;border:1px solid transparent;color:#8a91a8;font-size:13px;cursor:pointer;white-space:nowrap;">Submissions</button>
+      <button class="dash-tab" data-section="profile" style="padding:8px 16px;border-radius:8px;background:none;border:1px solid transparent;color:#8a91a8;font-size:13px;cursor:pointer;white-space:nowrap;">Profile</button>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;">
+    <!-- Sidebar -->
+    <aside class="dash-sidebar">
+      <p style="font-size:11px;font-weight:600;color:#8a91a8;letter-spacing:0.08em;text-transform:uppercase;padding:0 12px;margin-bottom:8px;">Main</p>
+      <button class="dash-nav-item active" data-section="overview">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </button>
+      <button class="dash-nav-item" data-section="watchlist">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        Watchlist
+      </button>
+      <button class="dash-nav-item" data-section="history">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Watch History
+      </button>
+      <button class="dash-nav-item" data-section="submissions">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        My Submissions
+      </button>
+      <a href="/submit" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:#8a91a8;font-size:14px;font-weight:500;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.05)';this.style.color='#e6e8ef'" onmouseout="this.style.background='';this.style.color='#8a91a8'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Submit Video
       </a>
-    </div>
+      <div style="height:1px;background:#262b3d;margin:12px 0;"></div>
+      <p style="font-size:11px;font-weight:600;color:#8a91a8;letter-spacing:0.08em;text-transform:uppercase;padding:0 12px;margin-bottom:8px;">Account</p>
+      <button class="dash-nav-item" data-section="profile">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile &amp; Settings
+      </button>
+    </aside>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
-      <div class="bg-surface-900/50 border border-surface-700/50 rounded-2xl p-6 backdrop-blur-sm">
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+    <!-- Main content -->
+    <main style="flex:1;padding:32px 40px;overflow-y:auto;min-width:0;">
+      <!-- Overview -->
+      <div id="section-overview" class="dash-section active">
+        <div style="margin-bottom:32px;">
+          <h1 id="welcome-heading" style="font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:6px;">Welcome back 👋</h1>
+          <p style="color:#8a91a8;font-size:14px;">Here's a summary of your activity.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px;">
+          <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
+            <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;">Watchlist</p>
+            <p id="stat-watchlist" style="font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:700;color:#fff;">0</p>
           </div>
-          <p class="text-sm font-medium text-gray-400">Total Videos</p>
-        </div>
-        <p class="font-display text-3xl font-bold text-white flex items-center gap-2">
-          <span id="stat-total-videos">-</span>
-          <span class="text-xs font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">+1 this week</span>
-        </p>
-      </div>
-      
-      <div class="bg-surface-900/50 border border-surface-700/50 rounded-2xl p-6 backdrop-blur-sm opacity-50 cursor-not-allowed hidden sm:block relative overflow-hidden group">
-        <div class="absolute inset-0 bg-surface-950/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
-          <span class="text-xs font-medium text-brand-400 bg-brand-500/10 border border-brand-500/20 px-3 py-1 rounded-full">Coming Soon</span>
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
+            <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;">Watch History</p>
+            <p id="stat-history" style="font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:700;color:#fff;">0</p>
           </div>
-          <p class="text-sm font-medium text-gray-400">Total Views</p>
-        </div>
-        <p class="font-display text-3xl font-bold text-gray-500">---</p>
-      </div>
-
-      <div class="bg-surface-900/50 border border-surface-700/50 rounded-2xl p-6 backdrop-blur-sm opacity-50 cursor-not-allowed hidden lg:block relative overflow-hidden group">
-        <div class="absolute inset-0 bg-surface-950/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
-          <span class="text-xs font-medium text-brand-400 bg-brand-500/10 border border-brand-500/20 px-3 py-1 rounded-full">Coming Soon</span>
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+          <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
+            <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;">Submissions</p>
+            <p id="stat-submissions" style="font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:700;color:#fff;">0</p>
           </div>
-          <p class="text-sm font-medium text-gray-400">Engagement</p>
         </div>
-        <p class="font-display text-3xl font-bold text-gray-500">---</p>
-      </div>
-    </div>
-
-    <!-- Video List Box -->
-    <div class="bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 rounded-3xl overflow-hidden shadow-xl">
-      <div class="p-6 sm:p-8 border-b border-surface-700">
-        <h2 class="font-display text-xl font-bold text-white">Your Submitted Videos</h2>
-      </div>
-      
-      <div id="loading-state" class="p-8 text-center animate-pulse hidden">
-        <div class="w-10 h-10 mx-auto rounded-full border-2 border-brand-500/30 border-t-brand-500 animate-spin mb-4"></div>
-        <p class="text-gray-400">Loading videos...</p>
-      </div>
-
-      <div id="empty-state" class="hidden p-12 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-surface-800 flex items-center justify-center mx-auto mb-4 border border-surface-700">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        <div>
+          <h2 style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:#fff;margin-bottom:16px;">Continue Watching</h2>
+          <div id="continue-watching" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;"></div>
+          <div id="continue-empty" style="padding:32px;background:#141826;border:1px solid #262b3d;border-radius:12px;text-align:center;color:#8a91a8;font-size:14px;">No watch history yet. <a href="/browse" style="color:#818cf8;text-decoration:none;">Browse videos</a></div>
         </div>
-        <h3 class="font-display text-xl font-bold text-white mb-2">No videos yet</h3>
-        <p class="text-gray-400 mb-6 max-w-sm mx-auto">You haven't submitted any videos. Share your first entrepreneurial story!</p>
-        <a href="/submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-white font-medium border border-surface-600 transition-all">
-          Submit a Video
-        </a>
       </div>
 
-      <div id="videos-list" class="divide-y divide-surface-700/50 hidden"></div>
-    </div>
-  </main>
-  
-  <footer id="app-footer" class="mt-auto border-t border-white/5 bg-surface-950/50"></footer>
-  <script src="/js/common.js?v=5"></script>
-  <script src="/js/dashboard.js?v=5"></script>
+      <!-- Watchlist -->
+      <div id="section-watchlist" class="dash-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">My Watchlist</h2>
+          <a href="/browse" style="font-size:14px;color:#818cf8;text-decoration:none;">+ Add more</a>
+        </div>
+        <div id="watchlist-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;"></div>
+        <div id="watchlist-empty" style="padding:48px;background:#141826;border:1px solid #262b3d;border-radius:12px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">📚</div>
+          <p style="color:#8a91a8;font-size:14px;margin-bottom:16px;">Your watchlist is empty.</p>
+          <a href="/browse" style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">Browse Videos</a>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div id="section-history" class="dash-section">
+        <h2 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:24px;">Watch History</h2>
+        <div id="history-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="history-empty" style="padding:48px;background:#141826;border:1px solid #262b3d;border-radius:12px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">🕐</div>
+          <p style="color:#8a91a8;font-size:14px;">No watch history yet.</p>
+        </div>
+      </div>
+
+      <!-- Submissions -->
+      <div id="section-submissions" class="dash-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">My Submissions</h2>
+          <a href="/submit" style="padding:9px 18px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-size:13px;font-weight:600;text-decoration:none;">+ New Submission</a>
+        </div>
+        <div id="submissions-loading" style="text-align:center;padding:40px;color:#8a91a8;font-size:14px;">Loading…</div>
+        <div id="submissions-table" class="hidden"></div>
+        <div id="submissions-empty" class="hidden" style="padding:48px;background:#141826;border:1px solid #262b3d;border-radius:12px;text-align:center;">
+          <div style="font-size:40px;margin-bottom:12px;">📝</div>
+          <p style="color:#8a91a8;font-size:14px;margin-bottom:16px;">No submissions yet.</p>
+          <a href="/submit" style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">Submit Your First Video</a>
+        </div>
+      </div>
+
+      <!-- Profile & Settings -->
+      <div id="section-profile" class="dash-section">
+        <h2 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:28px;">Profile &amp; Settings</h2>
+        <div style="max-width:500px;">
+          <div id="profile-error" class="hidden" style="padding:12px 16px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#fb7185;font-size:14px;margin-bottom:20px;"></div>
+          <div id="profile-success" class="hidden" style="padding:12px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;color:#34d399;font-size:14px;margin-bottom:20px;"></div>
+          <form id="profile-form">
+            <div style="margin-bottom:18px;">
+              <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:6px;">Full Name</label>
+              <input type="text" id="profile-name" style="width:100%;padding:12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+            </div>
+            <div style="margin-bottom:18px;">
+              <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:6px;">Email <span style="color:#8a91a8;font-weight:400;">(cannot be changed)</span></label>
+              <input type="email" id="profile-email" disabled style="width:100%;padding:12px 14px;background:#0b0d17;border:1px solid #262b3d;border-radius:10px;color:#8a91a8;font-size:14px;outline:none;box-sizing:border-box;cursor:not-allowed;"/>
+            </div>
+            <div style="margin-bottom:24px;">
+              <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:6px;">Profile Image URL</label>
+              <input type="url" id="profile-image-url" placeholder="https://example.com/avatar.jpg" style="width:100%;padding:12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+            </div>
+            <button type="submit" id="profile-save-btn" style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:14px;cursor:pointer;">Save Changes</button>
+          </form>
+
+          <div style="height:1px;background:#262b3d;margin:32px 0;"></div>
+          <h3 style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:600;color:#fff;margin-bottom:16px;">Change Password</h3>
+          <form id="password-form">
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:6px;">Current Password</label>
+              <input type="password" id="current-password" placeholder="••••••••" style="width:100%;padding:12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:6px;">New Password</label>
+              <input type="password" id="new-password" placeholder="Min 8 chars, upper, lower, number" style="width:100%;padding:12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+            </div>
+            <div style="margin-bottom:20px;">
+              <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:6px;">Confirm New Password</label>
+              <input type="password" id="confirm-new-password" placeholder="••••••••" style="width:100%;padding:12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+            </div>
+            <button type="submit" id="password-save-btn" style="padding:12px 28px;background:#1c2030;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-weight:600;font-size:14px;cursor:pointer;">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/common.js?v=6"></script>
+  <script src="/js/dashboard.js?v=3"></script>
 </body>
 </html>

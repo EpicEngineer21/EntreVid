@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Videos | EntreVid</title>
+  <meta name="description" content="Browse our full library of curated entrepreneur video interviews. Filter by category, sort, and discover your next big inspiration." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+</head>
+<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
+
+  <main style="flex:1;max-width:1280px;margin:0 auto;padding:48px 24px;width:100%;">
+    <!-- Page Header -->
+    <div class="fade-up" style="margin-bottom:40px;">
+      <h1 style="font-family:'Sora',sans-serif;font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px;">Browse Videos</h1>
+      <p style="color:#8a91a8;font-size:15px;">Found <span id="results-count" style="color:#e6e8ef;font-weight:600;">0</span> videos · <span id="active-filters-text" style="color:#818cf8;"></span></p>
+    </div>
+
+    <!-- Sticky Filter Bar -->
+    <div style="position:sticky;top:64px;z-index:30;background:rgba(11,13,23,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,0.05);padding:16px 0;margin-bottom:32px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <div style="position:relative;flex:1;min-width:200px;">
+          <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="#8a91a8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" placeholder="Search videos, founders…" style="width:100%;padding:11px 16px 11px 40px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'" />
+        </div>
+        <select id="category-filter" style="padding:11px 16px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;cursor:pointer;">
+          <option value="All">All Categories</option>
+        </select>
+        <select id="sort-filter" style="padding:11px 16px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;cursor:pointer;">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="az">A – Z</option>
+          <option value="featured">Featured</option>
+        </select>
+        <select id="page-size-filter" style="padding:11px 16px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;cursor:pointer;">
+          <option value="9" selected>9/page</option>
+          <option value="12">12/page</option>
+          <option value="24">24/page</option>
+        </select>
+        <button id="reset-btn" style="padding:11px 16px;background:#1c2030;border:1px solid #262b3d;border-radius:10px;color:#8a91a8;font-size:14px;cursor:pointer;white-space:nowrap;">Clear All</button>
+      </div>
+      <!-- Active filter chips -->
+      <div id="filter-chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"></div>
+    </div>
+
+    <!-- Skeleton / Grid -->
+    <div id="loading-state" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;">
+      <div class="skeleton" style="border-radius:16px;height:260px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:260px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:260px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:260px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:260px;"></div>
+      <div class="skeleton" style="border-radius:16px;height:260px;"></div>
+    </div>
+
+    <div id="video-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;"></div>
+
+    <div id="empty-state" class="hidden" style="text-align:center;padding:80px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">🔍</div>
+      <h3 style="font-family:'Sora',sans-serif;font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:8px;">No videos found</h3>
+      <p style="color:#8a91a8;font-size:14px;margin-bottom:24px;">Try a different search term or category.</p>
+      <button id="reset-filters-btn" style="padding:10px 20px;background:#1c2030;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;cursor:pointer;">Reset Filters</button>
+    </div>
+
+    <div id="pagination-controls" class="hidden" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:48px;">
+      <button id="page-prev-btn" style="padding:10px 20px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;cursor:pointer;">← Previous</button>
+      <p id="page-indicator" style="font-size:14px;color:#8a91a8;"></p>
+      <button id="page-next-btn" style="padding:10px 20px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;cursor:pointer;">Next →</button>
+    </div>
+  </main>
+
+  <footer id="app-footer" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(11,13,23,0.6);"></footer>
+
+  <script src="/js/common.js?v=6"></script>
+  <script src="/js/browse.js?v=1"></script>
+</body>
+</html>

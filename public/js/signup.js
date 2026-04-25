@@ -3,40 +3,33 @@
  */
 (async function initSignup() {
   await window.initAppContext();
-
-  if (window.App.currentUser) {
-    window.location.href = '/';
-    return;
-  }
-
+  if (window.App.currentUser) { window.location.href = '/'; return; }
   window.renderNav(window.App.currentUser, 'signup');
-  window.renderFooter();
+
+  document.getElementById('google-btn')?.addEventListener('click', () => {
+    window.showFlash('error', 'Google Sign-In coming soon. Please use email signup for now.');
+  });
 
   const form = document.getElementById('signup-form');
-  const submitBtn = document.getElementById('submit-btn');
+  const submitBtn = document.getElementById('signup-btn');
+  const errBox = document.getElementById('error-container');
 
-  form.addEventListener('submit', async (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    document.getElementById('error-box').classList.add('hidden');
-
-    const originalHtml = submitBtn.innerHTML;
+    errBox?.classList.add('hidden');
+    const orig = submitBtn.innerHTML;
     window.setButtonLoading(submitBtn, true);
-
-    const payload = {
+    const { res, data } = await window.postJson('/api/auth/signup', {
       fullName: document.getElementById('fullName').value,
       email: document.getElementById('email').value,
       password: document.getElementById('password').value,
       confirmPassword: document.getElementById('confirmPassword').value,
-    };
-
-    const { res, data } = await window.postJson('/api/auth/signup', payload);
-
+    });
     if (!res.ok || !data.ok) {
-      window.setButtonLoading(submitBtn, false, originalHtml);
-      window.showErrors('error-box', data.errors || ['Signup failed. Please try again.']);
+      window.setButtonLoading(submitBtn, false, orig);
+      if (errBox) { errBox.textContent = (data.errors || []).join(' '); errBox.classList.remove('hidden'); }
       return;
     }
-
     window.location.href = data.next || '/verify-email';
   });
 })();

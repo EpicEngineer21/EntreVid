@@ -174,17 +174,29 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-brand-300: #91a7ff;
-    --color-brand-400: #748ffc;
-    --color-brand-500: #5c7cfa;
-    --color-brand-600: #4c6ef5;
-    --color-brand-700: #4263eb;
-    --color-brand-900: #364fc7;
-    --color-surface-700: #2d3250;
-    --color-surface-800: #1e2140;
-    --color-surface-900: #171a2e;
-    --color-surface-950: #0d0f1a;
-    --font-display: "Outfit", system-ui, sans-serif;
+    /* ── Brand: Electric Indigo → Violet ── */
+    --color-brand-300: #a5b4fc;
+    --color-brand-400: #818cf8;
+    --color-brand-500: #6366f1;
+    --color-brand-600: #4f46e5;
+    --color-brand-700: #4338ca;
+    --color-brand-900: #312e81;
+    /* ── Accent: Violet ── */
+    --color-accent-400: #c084fc;
+    --color-accent-500: #a855f7;
+    --color-accent-600: #9333ea;
+    /* ── Surfaces (softer than pure-black) ── */
+    --color-surface-600: #323650;
+    --color-surface-700: #262b3d;
+    --color-surface-800: #1c2030;
+    --color-surface-900: #141826;
+    --color-surface-950: #0b0d17;
+    /* ── Text hierarchy ── */
+    --color-fg: #e6e8ef;
+    --color-fg-muted: #8a91a8;
+    /* ── Teal (success) ── */
+    --color-teal-400: oklch(73% 0.15 182);
+    --font-display: "Sora", "Outfit", system-ui, sans-serif;
   }
 }
 @layer base {
@@ -455,6 +467,90 @@ a { -webkit-tap-highlight-color: transparent; }
   animation: slideDownFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes slideInSheet {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Scroll-reveal utility ─── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-up-delay-1 { transition-delay: 0.1s; }
+.fade-up-delay-2 { transition-delay: 0.2s; }
+.fade-up-delay-3 { transition-delay: 0.3s; }
+.fade-up-delay-4 { transition-delay: 0.4s; }
+
+/* ── Gradient text utility ── */
+.gradient-text {
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 40%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.gradient-text-warm {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #fb923c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glow button ── */
+.btn-glow {
+  box-shadow: 0 0 0 0 rgba(99,102,241,0);
+  transition: box-shadow 0.3s ease, transform 0.2s ease, background 0.2s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 20px 4px rgba(99,102,241,0.35), 0 4px 24px rgba(99,102,241,0.2);
+  transform: translateY(-2px);
+}
+
+/* ── Glass card ── */
+.glass-card {
+  background: rgba(28, 32, 48, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Shimmer skeleton ── */
+.skeleton {
+  background: linear-gradient(90deg, #1c2030 25%, #262b3d 50%, #1c2030 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
 /* ── Form autofill ──────────────────────────────────────── */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -474,7 +570,7 @@ input:-webkit-autofill:active {
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* ── Font display class ─────────────────────────────────── */
-.font-display { font-family: 'Outfit', system-ui, -apple-system, sans-serif !important; }
+.font-display { font-family: 'Sora', 'Outfit', system-ui, -apple-system, sans-serif !important; }
 
 /* ── @property declarations ─────────────────────────────── */
 ::-webkit-scrollbar {

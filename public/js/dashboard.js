@@ -1,120 +1,215 @@
 /**
- * EntreVid ΓÇö Dashboard Page
+ * EntreVid — Dashboard Page v3
+ * Drives sidebar nav, overview stats, watchlist, history, submissions, profile.
  */
 (async function initDashboard() {
   await window.initAppContext();
-  if (!window.App.currentUser || (window.App.currentUser.role !== 'verified_entrepreneur' && window.App.currentUser.role !== 'admin')) {
-    window.location.href = '/login';
-    return;
-  }
-  
-  window.renderNav(window.App.currentUser, 'dashboard');
-  window.renderFooter();
+  const user = window.App.currentUser;
+  if (!user) { window.location.href = '/login'; return; }
 
-  const loadingState = document.getElementById('loading-state');
-  const emptyState = document.getElementById('empty-state');
-  const videosList = document.getElementById('videos-list');
-  const statTotal = document.getElementById('stat-total-videos');
+  window.renderNav(user, 'dashboard');
+  window.initScrollReveal();
 
-  window.setSectionLoading('loading-state', 'videos-list', true);
+  // ── Sidebar nav switching ─────────────────────────────────
+  const navItems = document.querySelectorAll('.dash-nav-item, .dash-tab');
+  const sections = document.querySelectorAll('.dash-section');
 
-  const payload = await window.getJson('/api/my/videos');
-
-  window.setSectionLoading('loading-state', 'videos-list', false);
-
-  if (payload.__httpError || !payload.ok || !payload.data) {
-    window.renderStateMessage('empty-state', {
-      type: 'error',
-      title: 'Failed to load dashboard',
-      message: 'Please refresh and try again.',
-    });
-    return;
-  }
-
-  const videos = payload.data.videos || [];
-  statTotal.textContent = videos.length;
-
-  if (videos.length === 0) {
-    emptyState.classList.remove('hidden');
-    return;
-  }
-
-  videosList.classList.remove('hidden');
-  const esc = window.escapeHtml;
-
-  videosList.innerHTML = videos.map(video => {
-    const dateStr = new Date(video.createdAt).toLocaleDateString(undefined, {
-      month: 'short', day: 'numeric', year: 'numeric'
-    });
-    
-    const dYtId = window.extractYouTubeId(video.youtubeId) || window.extractYouTubeId(video.youtubeUrl) || '';
-    return `
-      <div class="px-6 sm:px-8 py-6 flex flex-col sm:flex-row gap-6 hover:bg-surface-800/30 transition-colors group">
-        <!-- Thumbnail -->
-        <a href="/video/${esc(video.id)}" class="shrink-0 relative w-full sm:w-48 aspect-video rounded-xl overflow-hidden bg-surface-900 border border-surface-700 block">
-          <img src="https://img.youtube.com/vi/${esc(dYtId)}/mqdefault.jpg" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-surface-950/20">
-            <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center pl-0.5 border border-white/20">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-          </div>
-        </a>
-        
-        <!-- Info -->
-        <div class="flex-grow flex flex-col min-w-0">
-          <div class="flex items-start justify-between gap-4 mb-2">
-            <a href="/video/${esc(video.id)}" class="font-display text-lg font-bold text-white hover:text-brand-400 transition-colors line-clamp-1">${esc(video.title)}</a>
-            <span class="shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-800 text-brand-300 border border-surface-700">${esc(video.category)}</span>
-          </div>
-          
-          <p class="text-sm text-gray-400 line-clamp-2 mb-4 leading-relaxed">${esc(video.description)}</p>
-          
-          <div class="flex flex-wrap items-center mt-auto gap-y-3 gap-x-6 text-xs text-gray-500">
-            <div class="flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> ${dateStr}</div>
-            <div class="flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> -- Views</div>
-            <div class="flex items-center gap-1.5 ml-auto sm:ml-0"><svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Published</div>
-          </div>
-        </div>
-        
-        <!-- Actions -->
-        <div class="shrink-0 flex sm:flex-col items-center justify-end sm:justify-center gap-2 pt-4 sm:pt-0 border-t sm:border-t-0 sm:border-l border-surface-700 sm:pl-6">
-          <a href="/video/${esc(video.id)}/edit" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-lg bg-surface-800 hover:bg-surface-700 text-white text-sm font-medium border border-surface-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            Edit
-          </a>
-          <button type="button"  class="delete-btn w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 text-sm font-medium border border-red-500/20 transition-colors" data-id="${esc(video.id)}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            Delete
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Delete Handlers
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const confirmed = await window.confirmAction({
-        title: 'Delete this video?',
-        message: 'This action cannot be undone.',
-      });
-      if (!confirmed) return;
-      
-      const prevHtml = btn.innerHTML;
-      btn.innerHTML = '<div class="w-4 h-4 border-2 border-red-500/30 border-t-red-500 rounded-full animate-spin"></div>';
-      btn.disabled = true;
-
-      const vidId = btn.getAttribute('data-id');
-      const { res, data } = await window.postJson(`/api/videos/${vidId}/delete`);
-      
-      if (res.ok && data.ok) {
-        window.showFlash('success', data.message || 'Video deleted.');
-        setTimeout(() => window.location.reload(), 500);
-      } else {
-        window.showFlash('error', data.errors ? data.errors[0] : 'Delete failed.');
-        btn.innerHTML = prevHtml;
-        btn.disabled = false;
+  function activateSection(name) {
+    sections.forEach(s => s.classList.toggle('active', s.id === `section-${name}`));
+    navItems.forEach(n => {
+      const active = n.dataset.section === name;
+      n.classList.toggle('active', active);
+      if (n.classList.contains('dash-tab')) {
+        n.style.background = active ? 'rgba(99,102,241,0.12)' : 'none';
+        n.style.border = active ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent';
+        n.style.color = active ? '#818cf8' : '#8a91a8';
       }
     });
+    // Lazy-load section data
+    if (name === 'submissions') loadSubmissions();
+    if (name === 'watchlist') loadWatchlist();
+    if (name === 'history') loadHistory();
+  }
+
+  navItems.forEach(n => n.addEventListener('click', () => activateSection(n.dataset.section)));
+
+  // ── Welcome heading ───────────────────────────────────────
+  const wh = document.getElementById('welcome-heading');
+  if (wh) wh.textContent = `Welcome back, ${user.fullName.split(' ')[0]} 👋`;
+
+  // ── Stats (from localStorage) ─────────────────────────────
+  const watchlist = JSON.parse(localStorage.getItem('ev_watchlist') || '[]');
+  const history   = JSON.parse(localStorage.getItem('ev_history')   || '[]');
+  const statW = document.getElementById('stat-watchlist');
+  const statH = document.getElementById('stat-history');
+  if (statW) statW.textContent = watchlist.length;
+  if (statH) statH.textContent = history.length;
+
+  // Continue watching (last 4 history items)
+  const cwEl = document.getElementById('continue-watching');
+  const cwEmpty = document.getElementById('continue-empty');
+  if (history.length && cwEl) {
+    cwEmpty?.classList.add('hidden');
+    try {
+      const data = await window.getJson('/api/videos');
+      const allVids = data.videos || [];
+      const recent = history.slice(-4).reverse().map(id => allVids.find(v => (v._id||v.id) === id)).filter(Boolean);
+      if (recent.length) {
+        cwEl.innerHTML = recent.map(v => {
+          const ytId = window.extractYouTubeId(v.youtubeUrl||v.youtubeId||v.id);
+          return `<a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <div style="aspect-ratio:16/9;background:#0b0d17;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:''}</div>
+            <div style="padding:10px;"><p style="font-size:13px;font-weight:500;color:#e6e8ef;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${window.escapeHtml(v.title||'')}</p></div>
+          </a>`;
+        }).join('');
+      } else { cwEmpty?.classList.remove('hidden'); }
+    } catch { cwEmpty?.classList.remove('hidden'); }
+  } else { cwEl?.style && (cwEl.style.display = 'none'); cwEmpty?.classList.remove('hidden'); }
+
+  // ── Submissions ───────────────────────────────────────────
+  let submissionsLoaded = false;
+  async function loadSubmissions() {
+    if (submissionsLoaded) return;
+    submissionsLoaded = true;
+    const loadEl = document.getElementById('submissions-loading');
+    const tableEl = document.getElementById('submissions-table');
+    const emptyEl = document.getElementById('submissions-empty');
+    const statS = document.getElementById('stat-submissions');
+
+    // Only entrepreneurs/admins have submissions
+    if (user.role !== 'verified_entrepreneur' && user.role !== 'admin') {
+      if (loadEl) loadEl.style.display = 'none';
+      const applyMsg = document.createElement('div');
+      applyMsg.style.cssText = 'padding:48px;background:#141826;border:1px solid #262b3d;border-radius:12px;text-align:center;';
+      applyMsg.innerHTML = `<div style="font-size:40px;margin-bottom:12px;">🚀</div><p style="color:#8a91a8;font-size:14px;margin-bottom:16px;">You need to be a verified entrepreneur to submit videos.</p><a href="/apply" style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">Apply Now</a>`;
+      document.getElementById('section-submissions')?.prepend(applyMsg);
+      return;
+    }
+
+    try {
+      const payload = await window.getJson('/api/my/videos');
+      if (loadEl) loadEl.style.display = 'none';
+      if (payload.__httpError || !payload.ok) { emptyEl?.classList.remove('hidden'); return; }
+      const videos = payload.data?.videos || [];
+      if (statS) statS.textContent = videos.length;
+      if (!videos.length) { emptyEl?.classList.remove('hidden'); return; }
+      tableEl?.classList.remove('hidden');
+      tableEl.innerHTML = `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">
+        <thead><tr style="border-bottom:1px solid #262b3d;">${['Title','Category','Date','Actions'].map(h=>`<th style="text-align:left;padding:10px 14px;font-size:12px;font-weight:600;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;">${h}</th>`).join('')}</tr></thead>
+        <tbody>${videos.map(v=>{
+          const ytId = window.extractYouTubeId(v.youtubeId||v.youtubeUrl||'');
+          const dateStr = new Date(v.createdAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+          return `<tr style="border-bottom:1px solid #1c2030;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''">
+            <td style="padding:14px;"><div style="display:flex;align-items:center;gap:10px;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/default.jpg" style="width:56px;height:40px;object-fit:cover;border-radius:6px;" loading="lazy"/>`:'<div style="width:56px;height:40px;background:#1c2030;border-radius:6px;"></div>'}<span style="font-weight:500;color:#e6e8ef;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;max-width:200px;">${window.escapeHtml(v.title||'')}</span></div></td>
+            <td style="padding:14px;"><span style="padding:3px 10px;background:rgba(99,102,241,0.1);border-radius:6px;font-size:12px;color:#818cf8;">${window.escapeHtml(v.category||'')}</span></td>
+            <td style="padding:14px;color:#8a91a8;">${dateStr}</td>
+            <td style="padding:14px;"><div style="display:flex;gap:8px;"><a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="padding:6px 12px;background:#1c2030;border:1px solid #262b3d;border-radius:8px;color:#e6e8ef;font-size:12px;font-weight:500;text-decoration:none;">View</a><button class="delete-btn" data-id="${window.escapeHtml(v._id||v.id||'')}" style="padding:6px 12px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);border-radius:8px;color:#f43f5e;font-size:12px;cursor:pointer;">Delete</button></div></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>`;
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this video? This cannot be undone.')) return;
+          btn.textContent = '…'; btn.disabled = true;
+          const { res, data } = await window.postJson(`/api/videos/${btn.dataset.id}/delete`);
+          if (res.ok && data.ok) { window.showFlash('success', 'Video deleted.'); setTimeout(()=>location.reload(),600); }
+          else { window.showFlash('error', 'Delete failed.'); btn.textContent='Delete'; btn.disabled=false; }
+        });
+      });
+    } catch { if (loadEl) loadEl.style.display='none'; emptyEl?.classList.remove('hidden'); }
+  }
+
+  // ── Watchlist ─────────────────────────────────────────────
+  let watchlistLoaded = false;
+  async function loadWatchlist() {
+    if (watchlistLoaded) return;
+    watchlistLoaded = true;
+    const gridEl = document.getElementById('watchlist-grid');
+    const emptyEl = document.getElementById('watchlist-empty');
+    const ids = JSON.parse(localStorage.getItem('ev_watchlist')||'[]');
+    if (!ids.length) { emptyEl?.classList.remove('hidden'); return; }
+    try {
+      const data = await window.getJson('/api/videos');
+      const all = data.videos||[];
+      const saved = ids.map(id=>all.find(v=>(v._id||v.id)===id)).filter(Boolean);
+      if (!saved.length) { emptyEl?.classList.remove('hidden'); return; }
+      emptyEl?.classList.add('hidden');
+      gridEl.innerHTML = saved.map(v=>{
+        const ytId=window.extractYouTubeId(v.youtubeUrl||v.youtubeId||v.id);
+        return `<a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="display:block;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;overflow:hidden;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="aspect-ratio:16/9;background:#0b0d17;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:''}</div>
+          <div style="padding:12px;"><span style="display:inline-block;padding:2px 8px;background:rgba(99,102,241,0.1);border-radius:6px;font-size:11px;color:#818cf8;margin-bottom:6px;">${window.escapeHtml(v.category||'')}</span><p style="font-size:13px;font-weight:500;color:#e6e8ef;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${window.escapeHtml(v.title||'')}</p></div>
+        </a>`;
+      }).join('');
+    } catch { emptyEl?.classList.remove('hidden'); }
+  }
+
+  // ── History ───────────────────────────────────────────────
+  let historyLoaded = false;
+  async function loadHistory() {
+    if (historyLoaded) return;
+    historyLoaded = true;
+    const listEl = document.getElementById('history-list');
+    const emptyEl = document.getElementById('history-empty');
+    const ids = JSON.parse(localStorage.getItem('ev_history')||'[]');
+    if (!ids.length) { emptyEl?.classList.remove('hidden'); return; }
+    try {
+      const data = await window.getJson('/api/videos');
+      const all = data.videos||[];
+      const seen = ids.slice().reverse().map(id=>all.find(v=>(v._id||v.id)===id)).filter(Boolean);
+      if (!seen.length) { emptyEl?.classList.remove('hidden'); return; }
+      emptyEl?.classList.add('hidden');
+      listEl.innerHTML = seen.map(v=>{
+        const ytId=window.extractYouTubeId(v.youtubeUrl||v.youtubeId||v.id);
+        return `<a href="/video-details.html?id=${window.escapeHtml(v._id||v.id||'')}" style="display:flex;align-items:center;gap:16px;text-decoration:none;background:#141826;border:1px solid #262b3d;border-radius:12px;padding:12px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(99,102,241,0.3)'" onmouseout="this.style.borderColor='#262b3d'">
+          <div style="width:80px;height:56px;border-radius:8px;overflow:hidden;background:#0b0d17;flex-shrink:0;">${ytId?`<img src="https://img.youtube.com/vi/${ytId}/default.jpg" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:'<div></div>'}</div>
+          <div><p style="font-size:14px;font-weight:500;color:#e6e8ef;margin-bottom:4px;">${window.escapeHtml(v.title||'')}</p><p style="font-size:12px;color:#8a91a8;">${window.escapeHtml(v.entrepreneur||'')} · ${window.escapeHtml(v.category||'')}</p></div>
+        </a>`;
+      }).join('');
+    } catch { emptyEl?.classList.remove('hidden'); }
+  }
+
+  // ── Profile section ───────────────────────────────────────
+  const profileName = document.getElementById('profile-name');
+  const profileEmail = document.getElementById('profile-email');
+  const profileImageUrl = document.getElementById('profile-image-url');
+  if (profileName) profileName.value = user.fullName || '';
+  if (profileEmail) profileEmail.value = user.email || '';
+  if (profileImageUrl) profileImageUrl.value = user.profileImageUrl || '';
+
+  document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errEl = document.getElementById('profile-error');
+    const sucEl = document.getElementById('profile-success');
+    errEl?.classList.add('hidden'); sucEl?.classList.add('hidden');
+    const btn = document.getElementById('profile-save-btn');
+    const orig = btn.innerHTML;
+    window.setButtonLoading(btn, true);
+    const { res, data } = await window.postJson('/api/profile/update', {
+      fullName: profileName?.value.trim(),
+      profileImageUrl: profileImageUrl?.value.trim(),
+    });
+    window.setButtonLoading(btn, false, orig);
+    if (res.ok && data.ok) { if (sucEl) { sucEl.textContent = 'Profile updated!'; sucEl.classList.remove('hidden'); } }
+    else { if (errEl) { errEl.textContent = (data.errors||['Update failed.'])[0]; errEl.classList.remove('hidden'); } }
+  });
+
+  document.getElementById('password-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('password-save-btn');
+    const orig = btn.innerHTML;
+    window.setButtonLoading(btn, true);
+    const { res, data } = await window.postJson('/api/profile/change-password', {
+      currentPassword: document.getElementById('current-password')?.value,
+      newPassword: document.getElementById('new-password')?.value,
+      confirmNewPassword: document.getElementById('confirm-new-password')?.value,
+    });
+    window.setButtonLoading(btn, false, orig);
+    const errEl = document.getElementById('profile-error');
+    const sucEl = document.getElementById('profile-success');
+    errEl?.classList.add('hidden'); sucEl?.classList.add('hidden');
+    if (res.ok && data.ok) { if (sucEl) { sucEl.textContent = 'Password updated!'; sucEl.classList.remove('hidden'); } document.getElementById('password-form').reset(); }
+    else { if (errEl) { errEl.textContent = (data.errors||['Password update failed.'])[0]; errEl.classList.remove('hidden'); } }
   });
 })();

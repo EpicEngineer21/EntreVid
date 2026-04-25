@@ -202,188 +202,230 @@ window.renderNav = function renderNav(user, activePage) {
   if (!nav) return;
 
   const esc = escapeHtml;
-  const active = (page) => activePage === page ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white hover:bg-white/5';
+  const active = (page) => activePage === page
+    ? 'text-white bg-white/10'
+    : 'text-gray-400 hover:text-white hover:bg-white/5';
 
-  let desktopLinks = '';
-  let mobileLinks = '';
+  // ── Core public links ──
+  const coreLinks = [
+    { href: '/',          id: 'nav-home',     page: 'home',     label: 'Home' },
+    { href: '/browse',    id: 'nav-browse',   page: 'browse',   label: 'Browse' },
+    { href: '/founders',  id: 'nav-founders', page: 'founders', label: 'Founders' },
+    { href: '/about',     id: 'nav-about',    page: 'about',    label: 'About' },
+    { href: '/contact',   id: 'nav-contact',  page: 'contact',  label: 'Contact' },
+  ];
+
+  const desktopCoreLinks = coreLinks.map(l =>
+    `<a href="${l.href}" id="${l.id}" class="nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active(l.page)}">${l.label}</a>`
+  ).join('');
+
+  const mobileCoreLinks = coreLinks.map(l =>
+    `<a href="${l.href}" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active(l.page)} transition-colors">${l.label}</a>`
+  ).join('');
+
+  let extraDesktop = '';
+  let extraMobile = '';
   let authSection = '';
   let mobileAuthSection = '';
 
   if (user) {
     const role = user.role || 'user';
-
     if (role === 'verified_entrepreneur' || role === 'admin') {
-      desktopLinks += `
-        <a href="/submit" id="nav-submit" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('submit')}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Upload Video
-        </a>
-        <a href="/dashboard" id="nav-dashboard" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('dashboard')}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Dashboard
-        </a>`;
-      mobileLinks += `
-        <a href="/submit" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('submit')} transition-colors">Upload Video</a>
+      extraDesktop += `<a href="/submit" id="nav-submit" class="nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('submit')}">Upload</a>
+        <a href="/dashboard" id="nav-dashboard" class="nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('dashboard')}">Dashboard</a>`;
+      extraMobile += `<a href="/submit" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('submit')} transition-colors">Upload Video</a>
         <a href="/dashboard" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('dashboard')} transition-colors">Dashboard</a>`;
     } else {
-      desktopLinks += `
-        <a href="/apply" id="nav-apply" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activePage === 'apply' ? 'text-white bg-white/10' : 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          Apply to Upload
-        </a>`;
-      mobileLinks += `<a href="/apply" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-colors">Apply to Upload</a>`;
+      extraDesktop += `<a href="/apply" id="nav-apply" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all duration-200">Apply</a>`;
+      extraMobile += `<a href="/apply" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-amber-400 hover:bg-amber-500/10 transition-colors">Apply to Upload</a>`;
     }
-
     if (role === 'admin') {
-      desktopLinks += `
-        <a href="/admin/applications" id="nav-admin" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activePage === 'admin-applications' ? 'text-white bg-white/10' : 'text-purple-400 hover:text-purple-300 hover:bg-purple-500/10'}">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/></svg>
-          Admin
-        </a>`;
-      mobileLinks += `<a href="/admin/applications" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors">Admin Panel</a>`;
+      extraDesktop += `<a href="/admin/applications" id="nav-admin" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-all duration-200">Admin</a>`;
+      extraMobile += `<a href="/admin/applications" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-purple-400 hover:bg-purple-500/10 transition-colors">Admin Panel</a>`;
     }
 
-    // Role badges
     let roleBadge = '';
-    if (role === 'verified_entrepreneur') {
-      roleBadge = `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20" title="Verified Entrepreneur">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-        ✓
-      </span>`;
-    } else if (role === 'admin') {
-      roleBadge = `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-purple-500/15 text-purple-400 text-[10px] font-semibold border border-purple-500/20" title="Admin">👑</span>`;
-    }
+    if (role === 'verified_entrepreneur') roleBadge = `<span class="inline-flex px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">✓</span>`;
+    if (role === 'admin') roleBadge = `<span class="inline-flex px-1.5 py-0.5 rounded-full bg-purple-500/15 text-purple-400 text-[10px] font-semibold border border-purple-500/20">👑</span>`;
 
     const initial = esc(user.fullName.charAt(0).toUpperCase());
     const firstName = esc(user.fullName.split(' ')[0]);
     const avatar = user.profileImageUrl
-      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-800" onerror="this.onerror=null;this.replaceWith(document.createElement('div'));" />`
-      : `<div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold ring-2 ring-surface-800">${initial}</div>`;
+      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-800" onerror="this.style.display='none'" />`
+      : `<div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-accent-500 flex items-center justify-center text-white text-xs font-bold ring-2 ring-surface-800">${initial}</div>`;
 
     authSection = `
-      <div class="w-px h-6 bg-white/10 mx-2"></div>
-      <a href="/profile" class="flex items-center gap-2 pl-2 pr-2 py-1 rounded-lg transition-all duration-200 ${active('profile')}">
+      <div class="w-px h-6 bg-white/10 mx-1"></div>
+      <a href="/profile" class="flex items-center gap-2 px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/5">
         ${avatar}
         <div class="flex items-center gap-1.5">
-          <span class="text-sm font-medium text-gray-300 max-w-[100px] truncate">${firstName}</span>
+          <span class="text-sm font-medium text-gray-300 max-w-[90px] truncate">${firstName}</span>
           ${roleBadge}
         </div>
       </a>
-      <button id="nav-logout-btn" class="nav-link ml-1 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Logout
-      </button>`;
-
-    let mobileRoleBadge = '';
-    if (role === 'verified_entrepreneur') mobileRoleBadge = '<span class="text-emerald-400 text-xs">✓ Verified</span>';
-    if (role === 'admin') mobileRoleBadge = '<span class="text-purple-400 text-xs">👑 Admin</span>';
-
-    const mobileAvatar = user.profileImageUrl
-      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" class="w-8 h-8 rounded-full object-cover" onerror="this.onerror=null;this.replaceWith(document.createElement('div'));" />`
-      : `<div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">${initial}</div>`;
+      <button id="nav-logout-btn" class="ml-1 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200">Logout</button>`;
 
     mobileAuthSection = `
-      <div class="border-t border-white/5 my-2"></div>
-      <a href="/profile" class="px-4 py-2.5 flex items-center gap-3 rounded-lg transition-all duration-200 ${active('profile')}">
-        ${mobileAvatar}
-        <div>
-          <div class="text-sm font-medium text-white flex items-center gap-1.5">${esc(user.fullName)} ${mobileRoleBadge}</div>
-          <div class="text-xs text-gray-500">${esc(user.email)}</div>
-        </div>
-      </a>
-      <button id="nav-logout-btn-mobile" class="w-full text-left block px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors">Logout</button>`;
+      <div class="border-t border-white/5 my-2 pt-2">
+        <a href="/profile" class="px-4 py-2.5 flex items-center gap-3 rounded-lg hover:bg-white/5 transition-colors">
+          ${avatar}
+          <div>
+            <div class="text-sm font-medium text-white">${esc(user.fullName)} ${roleBadge}</div>
+            <div class="text-xs text-gray-500">${esc(user.email)}</div>
+          </div>
+        </a>
+        <button id="nav-logout-btn-mobile" class="w-full text-left block px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors">Logout</button>
+      </div>`;
   } else {
     authSection = `
-      <div class="w-px h-6 bg-white/10 mx-2"></div>
-      <a href="/login" id="nav-login" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('login')}">Log In</a>
-      <a href="/signup" id="nav-signup" class="ml-1 px-4 py-2 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-500 text-white transition-all shadow-md shadow-brand-500/20 hover:shadow-brand-500/30 hover:-translate-y-0.5">Sign Up</a>`;
-
+      <div class="w-px h-6 bg-white/10 mx-1"></div>
+      <a href="/login" id="nav-login" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('login')}">Log In</a>
+      <a href="/signup" id="nav-signup" class="ml-1 px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white transition-all shadow-md shadow-brand-500/20 hover:-translate-y-0.5 btn-glow">Sign Up</a>`;
     mobileAuthSection = `
-      <div class="border-t border-white/5 my-2"></div>
-      <a href="/login" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('login')} transition-colors">Log In</a>
-      <a href="/signup" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-brand-400 hover:text-brand-300 hover:bg-brand-500/10 transition-colors">Sign Up</a>`;
+      <div class="border-t border-white/5 my-2 pt-2">
+        <a href="/login" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('login')} transition-colors">Log In</a>
+        <a href="/signup" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-brand-400 hover:bg-brand-500/10 transition-colors">Sign Up</a>
+      </div>`;
   }
 
   nav.innerHTML = `
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <a href="/" id="nav-logo" class="flex items-center gap-2.5 group">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-shadow">
+        <a href="/" id="nav-logo" class="flex items-center gap-2.5 group flex-shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-accent-600 flex items-center justify-center shadow-lg shadow-brand-500/25 group-hover:shadow-brand-500/50 transition-all duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
           <span class="font-display font-bold text-lg tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">EntreVid</span>
         </a>
 
-        <!-- Desktop Links -->
-        <div class="hidden sm:flex items-center gap-1">
-          <a href="/" id="nav-home" class="nav-link px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('home')}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block mr-1.5 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            Home
-          </a>
-          ${desktopLinks}
+        <!-- Desktop Nav -->
+        <div class="hidden lg:flex items-center gap-0.5">
+          ${desktopCoreLinks}
+        </div>
+
+        <!-- Desktop Right -->
+        <div class="hidden lg:flex items-center gap-1">
+          ${extraDesktop}
           ${authSection}
         </div>
 
         <!-- Mobile menu button -->
-        <button id="mobile-menu-btn" class="sm:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" id="menu-icon-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
+    </div>
 
-      <!-- Mobile menu -->
-      <div id="mobile-menu" class="sm:hidden hidden pb-4 space-y-1">
-        <a href="/" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('home')} transition-colors">Home</a>
-        ${mobileLinks}
-        ${mobileAuthSection}
+    <!-- Mobile Sheet Overlay -->
+    <div id="mobile-overlay" class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden" style="animation: overlayIn 0.25s ease"></div>
+    <!-- Mobile Sheet -->
+    <div id="mobile-sheet" class="lg:hidden fixed top-0 right-0 h-full w-72 bg-surface-900 border-l border-white/8 z-50 hidden flex-col p-6 overflow-y-auto" style="animation: slideInSheet 0.3s cubic-bezier(0.16,1,0.3,1)">
+      <div class="flex items-center justify-between mb-6">
+        <a href="/" class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-600 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <span class="font-display font-bold text-white">EntreVid</span>
+        </a>
+        <button id="mobile-sheet-close" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
+      <div class="space-y-1">
+        ${mobileCoreLinks}
+        ${extraMobile}
+      </div>
+      ${mobileAuthSection}
     </div>
   `;
 
-  // Mobile menu toggle
+  // Sheet toggle
   const mobileBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (mobileBtn && mobileMenu) {
-    mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-  }
+  const sheet = document.getElementById('mobile-sheet');
+  const overlay = document.getElementById('mobile-overlay');
+  const closeBtn = document.getElementById('mobile-sheet-close');
+  const openSheet = () => { sheet.classList.remove('hidden'); sheet.style.display = 'flex'; overlay.classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
+  const closeSheet = () => { sheet.classList.add('hidden'); sheet.style.display = ''; overlay.classList.add('hidden'); document.body.style.overflow = ''; };
+  if (mobileBtn) mobileBtn.addEventListener('click', openSheet);
+  if (closeBtn) closeBtn.addEventListener('click', closeSheet);
+  if (overlay) overlay.addEventListener('click', closeSheet);
 
   // Logout
-  const bindLogout = (btnId) => {
-    const btn = document.getElementById(btnId);
-    if (btn) {
-      btn.addEventListener('click', async () => {
-        await window.postJson('/api/auth/logout', {});
-        window.location.href = '/';
-      });
-    }
-  };
-  bindLogout('nav-logout-btn');
-  bindLogout('nav-logout-btn-mobile');
+  ['nav-logout-btn', 'nav-logout-btn-mobile'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', async () => {
+      await window.postJson('/api/auth/logout', {});
+      window.location.href = '/';
+    });
+  });
 };
 
-// ── Footer ───────────────────────────────────────────────────
+// ── Footer (4-column) ────────────────────────────────────────
 window.renderFooter = function renderFooter() {
   const footer = document.getElementById('app-footer');
   if (!footer) return;
-
   const year = new Date().getFullYear();
   footer.innerHTML = `
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="col-span-2 lg:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-accent-600 flex items-center justify-center shadow-lg shadow-brand-500/25">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <span class="font-display font-bold text-lg text-white">EntreVid</span>
           </div>
-          <span class="font-display font-semibold text-sm text-gray-400">EntreVid</span>
+          <p class="text-sm text-gray-500 leading-relaxed mb-5">The premier video directory for entrepreneurial stories, strategies, and startup journeys.</p>
+          <div class="flex items-center gap-3">
+            <a href="https://twitter.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-surface-800 border border-white/8 flex items-center justify-center text-gray-500 hover:text-white hover:border-brand-500/50 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-surface-800 border border-white/8 flex items-center justify-center text-gray-500 hover:text-white hover:border-brand-500/50 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-surface-800 border border-white/8 flex items-center justify-center text-gray-500 hover:text-white hover:border-brand-500/50 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+          </div>
         </div>
-        <p class="text-xs text-gray-500">
-          &copy; ${year} Entrepreneur Video Directory. Built with
-          <span class="text-red-400">♥</span> using Node.js &amp; Express.
-        </p>
-        <div class="flex items-center gap-4">
-          <a href="/" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Home</a>
-          <a href="/submit" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Submit</a>
+
+        <!-- Product -->
+        <div>
+          <h3 class="text-sm font-semibold text-white mb-4 tracking-wide uppercase">Product</h3>
+          <ul class="space-y-3">
+            <li><a href="/browse" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Browse Videos</a></li>
+            <li><a href="/submit" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Submit a Story</a></li>
+            <li><a href="/founders" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Founders</a></li>
+            <li><a href="/apply" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Apply as Founder</a></li>
+          </ul>
         </div>
+
+        <!-- Company -->
+        <div>
+          <h3 class="text-sm font-semibold text-white mb-4 tracking-wide uppercase">Company</h3>
+          <ul class="space-y-3">
+            <li><a href="/about" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">About</a></li>
+            <li><a href="/contact" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Contact</a></li>
+            <li><a href="/dashboard" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Dashboard</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h3 class="text-sm font-semibold text-white mb-4 tracking-wide uppercase">Legal</h3>
+          <ul class="space-y-3">
+            <li><span class="text-sm text-gray-600">Terms of Service</span></li>
+            <li><span class="text-sm text-gray-600">Privacy Policy</span></li>
+            <li><span class="text-sm text-gray-600">Cookie Policy</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-gray-600">&copy; ${year} EntreVid. All rights reserved.</p>
+        <p class="text-xs text-gray-600">Built with <span class="text-brand-400">♥</span> using Node.js &amp; Express</p>
       </div>
     </div>
   `;
@@ -394,15 +436,17 @@ window.setButtonLoading = function setButtonLoading(btn, loading, originalHtml) 
   if (loading) {
     btn.disabled = true;
     btn.dataset.originalHtml = btn.innerHTML;
-    btn.innerHTML = `
-      <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-      </svg>
-      Processing...
-    `;
+    btn.innerHTML = `<svg class="animate-spin w-4 h-4 inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>Processing...`;
   } else {
     btn.disabled = false;
     btn.innerHTML = originalHtml || btn.dataset.originalHtml || 'Submit';
   }
+};
+
+// ── Scroll reveal init ────────────────────────────────────────
+window.initScrollReveal = function initScrollReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 };
