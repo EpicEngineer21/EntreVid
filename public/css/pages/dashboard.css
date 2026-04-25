@@ -17,14 +17,3 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
-
-#stat-total-videos {
-  background: linear-gradient(90deg, #7ee7d8, #60a5fa);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-#videos-list > div {
-  border-left: 2px solid rgba(20, 184, 166, 0.24);
-}

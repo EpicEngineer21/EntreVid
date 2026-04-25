@@ -8,16 +8,3 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
-
-form {
-  position: relative;
-}
-
-form::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: 1.5rem;
-  border: 1px solid rgba(245, 158, 11, 0.22);
-}

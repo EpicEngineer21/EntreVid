@@ -8,11 +8,3 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
-
-main h1 {
-  background: linear-gradient(90deg, #7ee7d8, #60a5fa);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
-}

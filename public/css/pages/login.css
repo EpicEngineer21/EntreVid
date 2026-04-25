@@ -8,20 +8,3 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
-
-main .max-w-md {
-  position: relative;
-}
-
-main .max-w-md::before {
-  content: "Welcome Back";
-  position: absolute;
-  top: -36px;
-  left: 8px;
-  font-family: "Outfit", system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(126, 231, 216, 0.85);
-}

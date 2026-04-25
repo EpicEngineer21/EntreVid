@@ -8,13 +8,3 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
-
-iframe {
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 24px 50px -32px rgba(8, 13, 24, 1);
-}
-
-main h1,
-main h2 {
-  letter-spacing: -0.02em;
-}

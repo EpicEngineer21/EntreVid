@@ -8,21 +8,3 @@
    ========================================================================= */
 
 /* Add page-specific custom styles below: */
-
-#edit-form h3 {
-  font-family: "Outfit", system-ui, sans-serif;
-  letter-spacing: 0.01em;
-}
-
-#edit-form {
-  position: relative;
-}
-
-#edit-form::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: 1.5rem;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}

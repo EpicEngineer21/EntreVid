@@ -6,16 +6,3 @@
 #profile-preview {
   min-height: 1.25rem;
 }
-
-#profile-form {
-  position: relative;
-}
-
-#profile-form::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: 1.5rem;
-  border: 1px solid rgba(126, 231, 216, 0.18);
-}
