@@ -44,15 +44,17 @@
   document.title = `${v.title} | EntreVid`;
 
   // ── YouTube ID ────────────────────────────────────────────────
-  const cleanId = window.extractYouTubeId ? (window.extractYouTubeId(v.youtubeId) || window.extractYouTubeId(v.youtubeUrl)) : extractYtId(v.youtubeUrl || v.youtubeId || '');
-
-  function extractYtId(url) {
-    if (!url) return null;
-    const m = url.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  function extractYtId(raw) {
+    if (!raw) return null;
+    // Already a clean 11-char ID (only base64url chars)
+    if (/^[A-Za-z0-9_-]{11}$/.test(raw.trim())) return raw.trim();
+    // Parse from URL
+    const m = raw.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/);
     return m ? m[1] : null;
   }
 
-  const ytId = cleanId || extractYtId(v.youtubeUrl || '');
+  // Prefer the stored youtubeId field, fall back to parsing youtubeUrl
+  const ytId = extractYtId(v.youtubeId) || extractYtId(v.youtubeUrl || '');
 
   // ── Player ────────────────────────────────────────────────────
   const playerIframe = document.getElementById('video-player');
@@ -100,8 +102,12 @@
   if (descEl) descEl.textContent = v.description || '';
 
   const tagsEl = document.getElementById('v-tags');
-  if (tagsEl && v.tags && v.tags.length > 0) {
-    tagsEl.innerHTML = v.tags.map(t => `<span class="vd-hashtag">#${esc(t.replace(/^#/,'').trim())}</span>`).join('');
+  // Tags may be an array OR a space-separated string depending on API endpoint
+  const tagList = Array.isArray(v.tags)
+    ? v.tags
+    : (v.tags || '').split(/[,\s]+/).filter(Boolean);
+  if (tagsEl && tagList.length > 0) {
+    tagsEl.innerHTML = tagList.map(t => `<span class="vd-hashtag">#${esc(t.replace(/^#/,'').trim())}</span>`).join('');
   }
 
   // ── Like / Save / Share buttons ───────────────────────────────
@@ -258,7 +264,8 @@
 
   try {
     const allData = await window.getJson('/api/videos');
-    const allVideos = allData.videos || [];
+    // API returns videos at top level; handle both shapes defensively
+    const allVideos = allData.videos || (allData.data && allData.data.videos) || [];
 
     // Same category first, then any — exclude current
     const related = allVideos
@@ -277,7 +284,8 @@
     } else {
       relListEl.innerHTML = related.map(rv => {
         const rvId = rv._id || rv.id;
-        const rvYtId = extractYtId(rv.youtubeUrl || rv.youtubeId || '');
+        // youtubeId in the list is already a clean ID, youtubeUrl is the full URL
+        const rvYtId = extractYtId(rv.youtubeId) || extractYtId(rv.youtubeUrl || '');
         const thumb = rvYtId ? `https://img.youtube.com/vi/${esc(rvYtId)}/mqdefault.jpg` : '';
         const rvViews = seededRand((rvId||'x') + 'v', 800, 48000);
         const rvLikes = Math.floor(rvViews * (0.04 + seededRand((rvId||'x') + 'l', 0, 8) / 100));
