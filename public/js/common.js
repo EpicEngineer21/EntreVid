@@ -288,52 +288,73 @@ window.renderNav = function renderNav(user, activePage) {
       </div>`;
   }
 
+  // Inject nav-specific responsive CSS once
+  if (!document.getElementById('ev-nav-style')) {
+    const s = document.createElement('style');
+    s.id = 'ev-nav-style';
+    s.textContent = `
+      #nav-desktop-links,#nav-desktop-right{display:none;}
+      #nav-mobile-btn{display:flex;}
+      @media(min-width:1024px){
+        #nav-desktop-links{display:flex;align-items:center;gap:2px;}
+        #nav-desktop-right{display:flex;align-items:center;gap:4px;}
+        #nav-mobile-btn{display:none;}
+      }
+      .ev-nav-link{display:flex;align-items:center;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;transition:background 0.2s,color 0.2s;color:#9ca3af;}
+      .ev-nav-link:hover{background:rgba(255,255,255,0.05);color:#fff;}
+      .ev-nav-link.active{background:rgba(255,255,255,0.1);color:#fff;}
+      .ev-mobile-link{display:block;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;color:#9ca3af;transition:background 0.2s,color 0.2s;}
+      .ev-mobile-link:hover{background:rgba(255,255,255,0.05);color:#fff;}
+      .ev-mobile-link.active{background:rgba(255,255,255,0.1);color:#fff;}
+    `;
+    document.head.appendChild(s);
+  }
+
+  const mkActive = (page) => activePage === page ? ' active' : '';
+  const dLinks = coreLinks.map(l => `<a href="${l.href}" id="${l.id}" class="ev-nav-link${mkActive(l.page)}">${l.label}</a>`).join('');
+  const mLinks = coreLinks.map(l => `<a href="${l.href}" class="ev-mobile-link${mkActive(l.page)}">${l.label}</a>`).join('');
+
   nav.innerHTML = `
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+    <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:64px;">
         <!-- Logo -->
-        <a href="/" id="nav-logo" class="flex items-center gap-2.5 group flex-shrink-0">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-accent-600 flex items-center justify-center shadow-lg shadow-brand-500/25 group-hover:shadow-brand-500/50 transition-all duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <a href="/" id="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,0.3);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
-          <span class="font-display font-bold text-lg tracking-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">EntreVid</span>
+          <span style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,#fff,#9ca3af);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EntreVid</span>
         </a>
 
-        <!-- Desktop Nav -->
-        <div class="hidden lg:flex items-center gap-0.5">
-          ${desktopCoreLinks}
-        </div>
+        <!-- Desktop centre links -->
+        <div id="nav-desktop-links">${dLinks}</div>
 
-        <!-- Desktop Right -->
-        <div class="hidden lg:flex items-center gap-1">
-          ${extraDesktop}
-          ${authSection}
-        </div>
+        <!-- Desktop right -->
+        <div id="nav-desktop-right">${extraDesktop}${authSection}</div>
 
-        <!-- Mobile menu button -->
-        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors" aria-label="Open menu">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" id="menu-icon-open" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <!-- Hamburger -->
+        <button id="nav-mobile-btn" aria-label="Open menu" style="padding:8px;border-radius:8px;background:none;border:none;cursor:pointer;color:#9ca3af;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Sheet Overlay -->
-    <div id="mobile-overlay" class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden" style="animation: overlayIn 0.25s ease"></div>
-    <!-- Mobile Sheet -->
-    <div id="mobile-sheet" class="lg:hidden fixed top-0 right-0 h-full w-72 bg-surface-900 border-l border-white/8 z-50 hidden flex-col p-6 overflow-y-auto" style="animation: slideInSheet 0.3s cubic-bezier(0.16,1,0.3,1)">
-      <div class="flex items-center justify-between mb-6">
-        <a href="/" class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-600 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <!-- Overlay -->
+    <div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:40;"></div>
+    <!-- Sheet -->
+    <div id="mobile-sheet" style="display:none;flex-direction:column;position:fixed;top:0;right:0;height:100%;width:288px;background:#141826;border-left:1px solid rgba(255,255,255,0.08);z-index:50;padding:24px;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+          <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
-          <span class="font-display font-bold text-white">EntreVid</span>
+          <span style="font-family:'Sora',sans-serif;font-weight:700;color:#fff;">EntreVid</span>
         </a>
-        <button id="mobile-sheet-close" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button id="mobile-sheet-close" style="padding:8px;border-radius:8px;background:none;border:none;cursor:pointer;color:#9ca3af;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <div class="space-y-1">
-        ${mobileCoreLinks}
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${mLinks}
         ${extraMobile}
       </div>
       ${mobileAuthSection}
@@ -341,12 +362,12 @@ window.renderNav = function renderNav(user, activePage) {
   `;
 
   // Sheet toggle
-  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileBtn = document.getElementById('nav-mobile-btn');
   const sheet = document.getElementById('mobile-sheet');
   const overlay = document.getElementById('mobile-overlay');
   const closeBtn = document.getElementById('mobile-sheet-close');
-  const openSheet = () => { sheet.classList.remove('hidden'); sheet.style.display = 'flex'; overlay.classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
-  const closeSheet = () => { sheet.classList.add('hidden'); sheet.style.display = ''; overlay.classList.add('hidden'); document.body.style.overflow = ''; };
+  const openSheet = () => { sheet.style.display = 'flex'; overlay.style.display = 'block'; document.body.style.overflow = 'hidden'; };
+  const closeSheet = () => { sheet.style.display = ''; overlay.style.display = ''; document.body.style.overflow = ''; };
   if (mobileBtn) mobileBtn.addEventListener('click', openSheet);
   if (closeBtn) closeBtn.addEventListener('click', closeSheet);
   if (overlay) overlay.addEventListener('click', closeSheet);
