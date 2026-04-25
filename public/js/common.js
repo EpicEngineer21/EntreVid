@@ -373,71 +373,81 @@ window.renderNav = function renderNav(user, activePage) {
   });
 };
 
-// ── Footer (4-column) ────────────────────────────────────────
+// ── Footer (4-column, inline CSS) ──────────────────────────
 window.renderFooter = function renderFooter() {
   const footer = document.getElementById('app-footer');
   if (!footer) return;
   const year = new Date().getFullYear();
+  if (!document.getElementById('ev-footer-style')) {
+    const s = document.createElement('style');
+    s.id = 'ev-footer-style';
+    s.textContent = `
+      .ev-footer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin-bottom:48px;}
+      @media(min-width:768px){.ev-footer-grid{grid-template-columns:2fr 1fr 1fr 1fr;}}
+      .ev-footer-col-brand{grid-column:span 2;}
+      @media(min-width:768px){.ev-footer-col-brand{grid-column:span 1;}}
+      .ev-footer-link{display:block;font-size:13px;color:#6b7280;text-decoration:none;margin-bottom:10px;transition:color 0.2s;}
+      .ev-footer-link:hover{color:#d1d5db;}
+      .ev-footer-social{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:#1c2030;border:1px solid rgba(255,255,255,0.06);color:#6b7280;text-decoration:none;transition:color 0.2s,border-color 0.2s;margin-right:8px;}
+      .ev-footer-social:hover{color:#fff;border-color:rgba(99,102,241,0.4);}
+    `;
+    document.head.appendChild(s);
+  }
+
   footer.innerHTML = `
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+    <div style="max-width:1200px;margin:0 auto;padding:56px 24px 32px;">
+      <div class="ev-footer-grid">
         <!-- Brand -->
-        <div class="col-span-2 lg:col-span-1">
-          <div class="flex items-center gap-2.5 mb-4">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-accent-600 flex items-center justify-center shadow-lg shadow-brand-500/25">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <div class="ev-footer-col-brand">
+          <a href="/" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:16px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
-            <span class="font-display font-bold text-lg text-white">EntreVid</span>
-          </div>
-          <p class="text-sm text-gray-500 leading-relaxed mb-5">The premier video directory for entrepreneurial stories, strategies, and startup journeys.</p>
-          <div class="flex items-center gap-3">
-            <a href="https://twitter.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-surface-800 border border-white/8 flex items-center justify-center text-gray-500 hover:text-white hover:border-brand-500/50 transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;">EntreVid</span>
+          </a>
+          <p style="font-size:13px;color:#6b7280;line-height:1.7;margin-bottom:20px;max-width:240px;">The premier video directory for entrepreneurial stories, strategies, and startup journeys.</p>
+          <div style="display:flex;gap:0;">
+            <a href="https://twitter.com" target="_blank" rel="noopener" class="ev-footer-social">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-surface-800 border border-white/8 flex items-center justify-center text-gray-500 hover:text-white hover:border-brand-500/50 transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" class="ev-footer-social">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-surface-800 border border-white/8 flex items-center justify-center text-gray-500 hover:text-white hover:border-brand-500/50 transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <a href="https://youtube.com" target="_blank" rel="noopener" class="ev-footer-social">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
           </div>
         </div>
 
         <!-- Product -->
         <div>
-          <h3 class="text-sm font-semibold text-white mb-4 tracking-wide uppercase">Product</h3>
-          <ul class="space-y-3">
-            <li><a href="/browse" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Browse Videos</a></li>
-            <li><a href="/submit" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Submit a Story</a></li>
-            <li><a href="/founders" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Founders</a></li>
-            <li><a href="/apply" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Apply as Founder</a></li>
-          </ul>
+          <p style="font-size:11px;font-weight:700;color:#e6e8ef;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;">Product</p>
+          <a href="/browse" class="ev-footer-link">Browse Videos</a>
+          <a href="/submit" class="ev-footer-link">Submit a Story</a>
+          <a href="/founders" class="ev-footer-link">Founders</a>
+          <a href="/apply" class="ev-footer-link">Apply as Founder</a>
         </div>
 
         <!-- Company -->
         <div>
-          <h3 class="text-sm font-semibold text-white mb-4 tracking-wide uppercase">Company</h3>
-          <ul class="space-y-3">
-            <li><a href="/about" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">About</a></li>
-            <li><a href="/contact" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Contact</a></li>
-            <li><a href="/dashboard" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">Dashboard</a></li>
-          </ul>
+          <p style="font-size:11px;font-weight:700;color:#e6e8ef;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;">Company</p>
+          <a href="/about" class="ev-footer-link">About</a>
+          <a href="/contact" class="ev-footer-link">Contact</a>
+          <a href="/dashboard" class="ev-footer-link">Dashboard</a>
         </div>
 
         <!-- Legal -->
         <div>
-          <h3 class="text-sm font-semibold text-white mb-4 tracking-wide uppercase">Legal</h3>
-          <ul class="space-y-3">
-            <li><span class="text-sm text-gray-600">Terms of Service</span></li>
-            <li><span class="text-sm text-gray-600">Privacy Policy</span></li>
-            <li><span class="text-sm text-gray-600">Cookie Policy</span></li>
-          </ul>
+          <p style="font-size:11px;font-weight:700;color:#e6e8ef;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;">Legal</p>
+          <span class="ev-footer-link" style="cursor:default;">Terms of Service</span>
+          <span class="ev-footer-link" style="cursor:default;">Privacy Policy</span>
+          <span class="ev-footer-link" style="cursor:default;">Cookie Policy</span>
         </div>
       </div>
 
-      <div class="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-xs text-gray-600">&copy; ${year} EntreVid. All rights reserved.</p>
-        <p class="text-xs text-gray-600">Built with <span class="text-brand-400">♥</span> using Node.js &amp; Express</p>
+      <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+        <p style="font-size:12px;color:#4b5563;">© ${year} EntreVid. All rights reserved.</p>
+        <p style="font-size:12px;color:#4b5563;">Built with <span style="color:#818cf8;">♥</span> using Node.js &amp; Express</p>
       </div>
     </div>
   `;
@@ -448,9 +458,11 @@ window.setButtonLoading = function setButtonLoading(btn, loading, originalHtml) 
   if (loading) {
     btn.disabled = true;
     btn.dataset.originalHtml = btn.innerHTML;
-    btn.innerHTML = `<svg class="animate-spin w-4 h-4 inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>Processing...`;
+    btn.style.opacity = '0.7';
+    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:6px;animation:spin 0.8s linear infinite;"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>Processing…`;
   } else {
     btn.disabled = false;
+    btn.style.opacity = '';
     btn.innerHTML = originalHtml || btn.dataset.originalHtml || 'Submit';
   }
 };
