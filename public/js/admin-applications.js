@@ -1,5 +1,5 @@
 /**
- * EntreVid - Admin Applications Page
+ * EntreVid – Admin Applications Page v2
  */
 (async function initAdmin() {
   await window.initAppContext();
@@ -7,236 +7,135 @@
     window.location.href = '/';
     return;
   }
-  
   window.renderNav(window.App.currentUser, 'admin-applications');
   window.renderFooter();
 
-  const loadingState = document.getElementById('loading-state');
-  const emptyState = document.getElementById('empty-state');
-  const appsList = document.getElementById('apps-list');
+  const loadEl   = document.getElementById('loading-state');
+  const emptyEl  = document.getElementById('empty-state');
+  const listEl   = document.getElementById('apps-list');
   const emptyTitle = document.getElementById('empty-title');
-  const tabPending = document.getElementById('tab-pending');
-  const tabApproved = document.getElementById('tab-approved');
-  const tabRejected = document.getElementById('tab-rejected');
+  const kpiPending  = document.getElementById('kpi-pending');
+  const kpiApproved = document.getElementById('kpi-approved');
+  const kpiRejected = document.getElementById('kpi-rejected');
+  const kpiTotal    = document.getElementById('kpi-total');
 
-  let currentTab = 'pending';
+  let currentFilter = 'pending';
   let allApps = [];
 
   const data = await window.getJson('/api/admin/applications');
-  window.setSectionLoading('loading-state', 'apps-list', false);
+  if (loadEl) loadEl.style.display = 'none';
 
-  if (data && data.ok) {
-    allApps = data.data.applications || [];
-  } else {
-    window.renderStateMessage('empty-state', {
-      type: 'error',
-      title: 'Failed to load applications',
-      message: 'Please refresh and try again.',
-    });
+  if (!data || !data.ok) {
+    emptyEl?.classList.remove('hidden');
+    if (emptyTitle) emptyTitle.textContent = 'Failed to load applications';
     return;
   }
 
+  allApps = data.data?.applications || [];
+  renderList();
+
+  document.querySelectorAll('.admin-tab').forEach(btn => {
+    btn.addEventListener('click', () => { currentFilter = btn.dataset.filter; renderList(); });
+  });
+
+  function updateTabs() {
+    const pCount = allApps.filter(a => a.status==='pending').length;
+    const aCount = allApps.filter(a => a.status==='approved').length;
+    const rCount = allApps.filter(a => a.status==='rejected').length;
+    if (kpiPending)  kpiPending.textContent  = pCount;
+    if (kpiApproved) kpiApproved.textContent = aCount;
+    if (kpiRejected) kpiRejected.textContent = rCount;
+    if (kpiTotal)    kpiTotal.textContent    = allApps.length;
+    document.querySelectorAll('.admin-tab').forEach(btn => {
+      const f = btn.dataset.filter;
+      const isActive = f === currentFilter;
+      const c = { pending:'245,158,11', approved:'16,185,129', rejected:'244,63,94', all:'99,102,241' }[f] || '99,102,241';
+      btn.style.background  = isActive ? `rgba(${c},0.15)` : 'transparent';
+      btn.style.borderColor = isActive ? `rgba(${c},0.5)`  : `rgba(${c},0.2)`;
+      btn.style.color       = isActive ? `rgb(${c})`       : '#8a91a8';
+      btn.style.fontWeight  = isActive ? '600' : '500';
+    });
+  }
+
   function renderList() {
-    const list = allApps.filter(a => a.status === currentTab);
-    
-    // Update counts and tabs
-    const pendingCount = allApps.filter(a => a.status === 'pending').length;
-    const approvedCount = allApps.filter(a => a.status === 'approved').length;
-    const rejectedCount = allApps.filter(a => a.status === 'rejected').length;
-    
-    tabPending.innerHTML = `${pendingCount} pending`;
-    tabApproved.innerHTML = `${approvedCount} approved`;
-    tabRejected.innerHTML = `${rejectedCount} rejected`;
-
-    // Base classes
-    const baseClass = "px-4 py-1.5 rounded-full border text-sm font-medium transition-colors cursor-pointer";
-    
-    // Pending tab
-    tabPending.className = `${baseClass} ${currentTab === 'pending' ? 'border-amber-500 text-amber-500 bg-amber-500/10' : 'border-amber-500/30 text-amber-500/50 hover:text-amber-400 hover:border-amber-500/50 hover:bg-amber-500/10'}`;
-    
-    // Approved tab
-    tabApproved.className = `${baseClass} ${currentTab === 'approved' ? 'border-emerald-500 text-emerald-500 bg-emerald-500/10' : 'border-emerald-500/30 text-emerald-500/50 hover:text-emerald-400 hover:border-emerald-500/50 hover:bg-emerald-500/10'}`;
-    
-    // Rejected tab
-    tabRejected.className = `${baseClass} ${currentTab === 'rejected' ? 'border-red-500 text-red-500 bg-red-500/10' : 'border-red-500/30 text-red-500/50 hover:text-red-400 hover:border-red-500/50 hover:bg-red-500/10'}`;
-
-    if (list.length === 0) {
-      emptyState.classList.remove('hidden');
-      appsList.classList.add('hidden');
-      emptyTitle.textContent = currentTab === 'pending' ? 'All caught up!' : 'No history found';
+    updateTabs();
+    const list = currentFilter === 'all' ? allApps : allApps.filter(a => a.status === currentFilter);
+    if (!list.length) {
+      listEl?.classList.add('hidden'); emptyEl?.classList.remove('hidden');
+      if (emptyTitle) emptyTitle.textContent = currentFilter==='pending' ? 'All caught up!' : 'Nothing here.';
       return;
     }
-
-    emptyState.classList.add('hidden');
-    appsList.classList.remove('hidden');
+    emptyEl?.classList.add('hidden'); listEl?.classList.remove('hidden');
 
     const esc = window.escapeHtml;
-    
-    appsList.innerHTML = list.map(app => {
-      const dbDate = new Date(app.appliedAt);
-      const date = `${dbDate.getDate()} ${dbDate.toLocaleString('default', { month: 'long' })} ${dbDate.getFullYear()}`;
-      const user = app.user || { fullName: 'Unknown', email: 'Unknown' };
-      const initial = esc((user.fullName || 'U').charAt(0).toUpperCase());
-      const avatarColors = ['bg-indigo-500', 'bg-blue-500', 'bg-purple-500', 'bg-pink-500', 'bg-rose-500', 'bg-teal-500'];
-      const avatarColor = avatarColors[(app.userId || 'a').charCodeAt(0) % avatarColors.length];
-      
-      let badgeHtml = '';
-      if (app.status === 'approved') badgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> Approved</span>`;
-      else if (app.status === 'rejected') badgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/10 text-red-500 border border-red-500/20"><svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg> Rejected</span>`;
-      else badgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Pending Review</span>`;
+    const COLORS = ['#6366f1','#a855f7','#10b981','#f59e0b','#f43f5e','#06b6d4'];
 
-      const actionsHtml = currentTab === 'pending' ? `
-        <div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
-          <button class="approve-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-500 hover:bg-green-400 text-white font-medium transition shadow-lg shadow-green-500/20 w-full sm:w-auto justify-center" data-id="${esc(app.userId)}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> Approve
-          </button>
-          <input type="text" placeholder="Rejection reason (optional, admin-only)" class="reject-reason-input flex-grow w-full bg-surface-950/50 border border-surface-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-surface-600 transition" data-input-id="${esc(app.userId)}">
-          <button class="reject-btn inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 font-medium border border-red-500/20 transition w-full sm:w-auto justify-center" data-id="${esc(app.userId)}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg> Reject
-          </button>
-        </div>
-      ` : `
-        <div class="pt-2">
-          <p class="text-xs text-gray-500 tracking-wider">Reviewed on ${new Date(app.updatedAt || app.appliedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-        </div>
-      `;
+    listEl.innerHTML = list.map((app, i) => {
+      const user = app.user || { fullName:'Unknown', email:'Unknown' };
+      const date = new Date(app.appliedAt).toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'});
+      const initials = (user.fullName||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      const color = COLORS[i % COLORS.length];
+
+      const badge = {
+        approved:`<span style="padding:4px 12px;border-radius:999px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#34d399;font-size:12px;font-weight:600;">✅ Approved</span>`,
+        rejected:`<span style="padding:4px 12px;border-radius:999px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);color:#f87171;font-size:12px;font-weight:600;">❌ Rejected</span>`,
+        pending:`<span style="padding:4px 12px;border-radius:999px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);color:#fbbf24;font-size:12px;font-weight:600;">⏳ Pending</span>`,
+      }[app.status]||'';
+
+      const actions = app.status==='pending' ? `
+        <div style="display:flex;gap:10px;flex-wrap:wrap;padding-top:16px;border-top:1px solid #262b3d;margin-top:16px;">
+          <button class="approve-btn" data-id="${esc(app.userId)}" style="padding:9px 20px;border-radius:10px;background:#10b981;border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">✓ Approve</button>
+          <input class="reject-reason-input" data-input-id="${esc(app.userId)}" placeholder="Rejection reason (optional)" style="flex:1;min-width:180px;padding:9px 14px;background:#0b0d17;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;"/>
+          <button class="reject-btn" data-id="${esc(app.userId)}" style="padding:9px 20px;border-radius:10px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);color:#f87171;font-size:14px;font-weight:600;cursor:pointer;">✗ Reject</button>
+        </div>`
+      : `<p style="font-size:12px;color:#8a91a8;margin-top:12px;">Reviewed on ${new Date(app.updatedAt||app.appliedAt).toLocaleDateString()}</p>`;
 
       return `
-        <div class="bg-surface-900/80 backdrop-blur-xl border border-surface-700/80 rounded-2xl p-6 sm:p-8 hover:bg-surface-800/40 transition-colors">
-          <div class="flex justify-between items-start mb-6">
-            <div class="flex gap-4 items-center">
-              <div class="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white shrink-0 ${avatarColor}">
-                ${initial}
-              </div>
+        <div style="background:#141826;border:1px solid #262b3d;border-radius:16px;padding:28px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;">${esc(initials)}</div>
               <div>
-                <h3 class="text-white font-bold text-2xl leading-tight mb-0.5">${esc(user.fullName)}</h3>
-                <p class="text-gray-400 text-sm">${esc(user.email)}</p>
+                <h3 style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:2px;">${esc(user.fullName)}</h3>
+                <p style="font-size:13px;color:#8a91a8;">${esc(user.email)}</p>
               </div>
             </div>
-            <div class="shrink-0 ml-4 hidden sm:block">
-              ${badgeHtml}
-            </div>
+            ${badge}
           </div>
-          
-          <div class="sm:hidden mb-6 -mt-2">
-            ${badgeHtml}
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;">
+            <div style="background:#1c2030;border-radius:10px;padding:14px;"><p style="font-size:11px;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Startup</p><p style="font-size:14px;font-weight:500;color:#e6e8ef;">${esc(app.startupName||'—')}</p></div>
+            <div style="background:#1c2030;border-radius:10px;padding:14px;"><p style="font-size:11px;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Applied</p><p style="font-size:14px;font-weight:500;color:#e6e8ef;">${date}</p></div>
+            ${app.linkedinUrl?`<div style="background:#1c2030;border-radius:10px;padding:14px;"><p style="font-size:11px;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">LinkedIn</p><a href="${esc(app.linkedinUrl)}" target="_blank" style="font-size:13px;color:#818cf8;text-decoration:none;">View →</a></div>`:''}
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            <div class="p-4 rounded-xl border border-surface-800 bg-surface-950/30">
-              <p class="text-[11px] font-medium text-gray-500 tracking-wider mb-1.5 uppercase">Startup / Business</p>
-              <p class="text-white font-medium">${esc(app.startupName)}</p>
-            </div>
-            <div class="p-4 rounded-xl border border-surface-800 bg-surface-950/30">
-              <p class="text-[11px] font-medium text-gray-500 tracking-wider mb-1.5 uppercase">Applied</p>
-              <p class="text-white font-medium">${date}</p>
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl border border-surface-800 bg-surface-950/30 mb-4">
-            <p class="text-[11px] font-medium text-gray-500 tracking-wider mb-2 uppercase">Bio</p>
-            <p class="text-gray-300 text-sm leading-relaxed">${esc(app.bio)}</p>
-          </div>
-
-          <div class="flex flex-wrap gap-3 mb-4">
-            ${app.linkedinUrl ? `<a href="${esc(app.linkedinUrl)}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium border border-transparent shadow transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg> LinkedIn</a>` : ''}
-            ${app.websiteUrl ? `<a href="${esc(app.websiteUrl)}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-800 text-gray-300 text-sm font-medium border border-surface-700 hover:bg-surface-700 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg> Website</a>` : ''}
-          </div>
-
-          ${app.notes ? `
-            <div class="p-4 rounded-xl border border-surface-800 bg-surface-950/30 mb-6">
-              <p class="text-[11px] font-medium text-gray-500 tracking-wider mb-2 uppercase">Notes from Applicant</p>
-              <p class="text-gray-300 text-sm leading-relaxed">${esc(app.notes)}</p>
-            </div>
-          ` : ''}
-          
-          ${app.rejectionReason && app.status === 'rejected' ? `
-            <div class="p-4 rounded-xl border border-red-500/20 bg-red-500/5 mb-6">
-              <p class="text-[11px] font-medium text-red-500 tracking-wider mb-2 uppercase">Rejection Reason</p>
-              <p class="text-red-300 text-sm leading-relaxed">${esc(app.rejectionReason)}</p>
-            </div>
-          ` : ''}
-
-          ${actionsHtml}
-        </div>
-      `;
+          <div style="background:#1c2030;border-radius:10px;padding:14px;margin-bottom:12px;"><p style="font-size:11px;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Bio</p><p style="font-size:14px;color:#c4c9d8;line-height:1.7;">${esc(app.bio||'No bio provided.')}</p></div>
+          ${app.notes?`<div style="background:#1c2030;border-radius:10px;padding:14px;margin-bottom:12px;"><p style="font-size:11px;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Notes</p><p style="font-size:14px;color:#c4c9d8;">${esc(app.notes)}</p></div>`:''}
+          ${app.rejectionReason&&app.status==='rejected'?`<div style="background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.2);border-radius:10px;padding:14px;margin-bottom:12px;"><p style="font-size:11px;color:#f87171;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Rejection Reason</p><p style="font-size:14px;color:#fca5a5;">${esc(app.rejectionReason)}</p></div>`:''}
+          ${actions}
+        </div>`;
     }).join('');
 
     bindActions();
   }
 
-  tabPending.addEventListener('click', () => {
-    currentTab = 'pending';
-    renderList();
-  });
-
-  tabApproved.addEventListener('click', () => {
-    currentTab = 'approved';
-    renderList();
-  });
-
-  tabRejected.addEventListener('click', () => {
-    currentTab = 'rejected';
-    renderList();
-  });
-
   function bindActions() {
     document.querySelectorAll('.approve-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const userId = btn.getAttribute('data-id');
-        const confirmed = await window.confirmAction({
-          title: 'Approve application?',
-          message: 'This will grant verified entrepreneur access.',
-        });
-        if (!confirmed) return;
-        const originalHtml = btn.innerHTML;
-        window.setButtonLoading(btn, true);
-        
-        const { res, data } = await window.postJson(`/api/admin/applications/${userId}/approve`);
-        if (res.ok && data.ok) {
-          const app = allApps.find(a => a.userId === userId);
-          if (app) app.status = 'approved';
-          window.showFlash('success', 'Application approved successfully.');
-          renderList();
-        } else {
-          window.setButtonLoading(btn, false, originalHtml);
-          window.showFlash('error', data.errors ? data.errors[0] : 'Failed to approve application.');
-        }
+        if (!confirm('Approve this application? This grants verified entrepreneur access.')) return;
+        const orig = btn.innerHTML; window.setButtonLoading(btn, true);
+        const {res,data} = await window.postJson(`/api/admin/applications/${btn.dataset.id}/approve`);
+        if (res.ok && data.ok) { const app=allApps.find(a=>a.userId===btn.dataset.id); if(app) app.status='approved'; window.showFlash('success','Application approved!'); renderList(); }
+        else { window.setButtonLoading(btn,false,orig); window.showFlash('error',(data.errors||['Failed'])[0]); }
       });
     });
-
     document.querySelectorAll('.reject-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const userId = btn.getAttribute('data-id');
-        const input = document.querySelector(`.reject-reason-input[data-input-id="${userId}"]`);
-        const reason = input ? input.value.trim() : '';
-        const confirmed = await window.confirmAction({
-          title: 'Reject application?',
-          message: 'You can still include a rejection reason for clarity.',
-        });
-        if (!confirmed) return;
-
-        const originalHtml = btn.innerHTML;
-        window.setButtonLoading(btn, true);
-
-        const { res, data } = await window.postJson(`/api/admin/applications/${userId}/reject`, { rejectionReason: reason });
-        if (res.ok && data.ok) {
-          const app = allApps.find(a => a.userId === userId);
-          if (app) {
-            app.status = 'rejected';
-            app.rejectionReason = reason;
-          }
-          window.showFlash('success', 'Application rejected.');
-          renderList();
-        } else {
-          window.setButtonLoading(btn, false, originalHtml);
-          window.showFlash('error', data.errors ? data.errors[0] : 'Failed to reject application.');
-        }
+        if (!confirm('Reject this application?')) return;
+        const reason = document.querySelector(`.reject-reason-input[data-input-id="${btn.dataset.id}"]`)?.value.trim()||'';
+        const orig = btn.innerHTML; window.setButtonLoading(btn, true);
+        const {res,data} = await window.postJson(`/api/admin/applications/${btn.dataset.id}/reject`,{rejectionReason:reason});
+        if (res.ok && data.ok) { const app=allApps.find(a=>a.userId===btn.dataset.id); if(app){app.status='rejected';app.rejectionReason=reason;} window.showFlash('success','Application rejected.'); renderList(); }
+        else { window.setButtonLoading(btn,false,orig); window.showFlash('error',(data.errors||['Failed'])[0]); }
       });
     });
   }
-
-  // Initial render
-  renderList();
 })();
-

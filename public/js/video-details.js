@@ -6,8 +6,9 @@
   window.renderNav(window.App.currentUser);
   window.renderFooter();
 
-  const pathParts = window.location.pathname.split('/');
-  const videoId = pathParts[pathParts.length - 1];
+  // Support both /video/:id and /video-details.html?id=:id
+  const params = new URLSearchParams(window.location.search);
+  const videoId = params.get('id') || window.location.pathname.split('/').filter(Boolean).pop();
 
   const loadingState = document.getElementById('loading-state');
   const content = document.getElementById('video-content');
@@ -110,6 +111,73 @@
   document.getElementById('v-submitter').innerHTML = owner && owner.role === 'verified_entrepreneur'
     ? `${window.escapeHtml(v.submittedBy)} <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400 inline" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`
     : window.escapeHtml(v.submittedBy);
+
+  // ── Watchlist toggle ──────────────────────────────────────
+  const vid = v._id || v.id || videoId;
+  const watchlistKey = 'ev_watchlist';
+  const historyKey = 'ev_history';
+
+  function getList(key) { return JSON.parse(localStorage.getItem(key) || '[]'); }
+  function setList(key, arr) { localStorage.setItem(key, JSON.stringify(arr)); }
+
+  // Track history (add to front, dedupe, max 50)
+  const hist = getList(historyKey).filter(id => id !== vid);
+  hist.unshift(vid);
+  setList(historyKey, hist.slice(0, 50));
+
+  // Watchlist button — inject into sidebar
+  const sidebar = document.querySelector('.space-y-6');
+  if (sidebar) {
+    const wlDiv = document.createElement('div');
+    wlDiv.style.cssText = 'background:rgba(20,24,38,0.8);border:1px solid #262b3d;border-radius:16px;padding:20px;text-align:center;';
+    const inWL = () => getList(watchlistKey).includes(vid);
+    const renderWLBtn = () => {
+      const saved = inWL();
+      wlDiv.innerHTML = `
+        <button id="watchlist-btn" style="width:100%;padding:11px 20px;border-radius:10px;border:1px solid ${saved?'rgba(244,63,94,0.3)':'rgba(99,102,241,0.3)'};background:${saved?'rgba(244,63,94,0.08)':'rgba(99,102,241,0.08)'};color:${saved?'#f87171':'#818cf8'};font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${saved?'currentColor':'none'}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          ${saved ? 'Remove from Watchlist' : 'Save to Watchlist'}
+        </button>
+        <p style="font-size:12px;color:#8a91a8;margin-top:8px;">Saved videos appear in your Dashboard</p>
+      `;
+      document.getElementById('watchlist-btn')?.addEventListener('click', () => {
+        const list = getList(watchlistKey);
+        if (inWL()) {
+          setList(watchlistKey, list.filter(id => id !== vid));
+          window.showFlash('success', 'Removed from watchlist.');
+        } else {
+          list.unshift(vid);
+          setList(watchlistKey, list.slice(0, 100));
+          window.showFlash('success', 'Saved to watchlist! View it in your Dashboard.');
+        }
+        renderWLBtn();
+      });
+    };
+    sidebar.insertBefore(wlDiv, sidebar.firstChild);
+    renderWLBtn();
+
+    // Share button
+    const shareDiv = document.createElement('div');
+    shareDiv.style.cssText = 'background:rgba(20,24,38,0.8);border:1px solid #262b3d;border-radius:16px;padding:20px;';
+    shareDiv.innerHTML = `
+      <p style="font-size:12px;font-weight:600;color:#8a91a8;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">Share this video</p>
+      <div style="display:flex;gap:8px;">
+        <input id="share-url" value="${window.location.href}" readonly style="flex:1;padding:8px 12px;background:#0b0d17;border:1px solid #262b3d;border-radius:8px;color:#8a91a8;font-size:12px;outline:none;"/>
+        <button id="copy-url-btn" style="padding:8px 14px;background:#1c2030;border:1px solid #262b3d;border-radius:8px;color:#e6e8ef;font-size:12px;cursor:pointer;white-space:nowrap;">Copy</button>
+      </div>
+    `;
+    sidebar.insertBefore(shareDiv, sidebar.children[1] || null);
+    document.getElementById('copy-url-btn')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText(window.location.href).then(() => window.showFlash('success', 'Link copied!')).catch(() => {});
+    });
+  }
+
+  // Founder link
+  const entEl = document.getElementById('v-entrepreneur');
+  if (entEl && v.entrepreneur) {
+    const slug = encodeURIComponent(v.entrepreneur);
+    entEl.innerHTML = `<a href="/founder-profile.html?name=${slug}" style="color:inherit;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,0.2);padding-bottom:1px;">${window.escapeHtml(v.entrepreneur)}</a>`;
+  }
 
   // Options Menu if owner/admin
   if (isOwner || isAdmin) {
