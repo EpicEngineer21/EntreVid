@@ -1,52 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile | Entrepreneur Video Directory</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/pages/profile.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>My Profile | EntreVid</title>
+  <meta name="description" content="View and update your EntreVid profile settings."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/base.css"/>
+  <link rel="stylesheet" href="/css/layout.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
 </head>
-<body class="bg-surface-950 text-gray-100 font-sans min-h-screen flex flex-col antialiased">
-  <nav id="main-nav" class="sticky top-0 z-50 backdrop-blur-xl bg-surface-950/80 border-b border-white/5"></nav>
-  <main class="flex-grow max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
-    <div class="mb-8">
-      <h1 class="font-display text-3xl font-bold text-white mb-2">My Profile</h1>
-      <p class="text-gray-400">View your account details and update your public profile info.</p>
+<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
+
+  <main style="flex:1;max-width:680px;margin:0 auto;padding:56px 24px;width:100%;box-sizing:border-box;">
+    <!-- Header -->
+    <div style="margin-bottom:36px;">
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:14px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);margin-bottom:18px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#818cf8" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h1 style="font-family:'Sora',sans-serif;font-size:1.7rem;font-weight:800;color:#fff;margin-bottom:6px;">My Profile</h1>
+      <p style="color:#8a91a8;font-size:14px;">Update your public profile information.</p>
     </div>
-    <div id="profile-errors" class="hidden mb-4"></div>
-    <div class="bg-surface-900/80 border border-surface-700/80 rounded-3xl p-6 sm:p-8">
-      <form id="profile-form" class="space-y-5">
-        <div>
-          <label for="fullName" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-          <input id="fullName" name="fullName" type="text" class="w-full px-4 py-2.5 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all" maxlength="80" required />
+
+    <!-- Avatar preview -->
+    <div id="avatar-preview" style="display:flex;align-items:center;gap:16px;padding:20px;background:#141826;border:1px solid #262b3d;border-radius:14px;margin-bottom:28px;">
+      <div id="avatar-circle" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;"></div>
+      <div>
+        <p id="avatar-name" style="font-family:'Sora',sans-serif;font-weight:600;color:#e6e8ef;font-size:15px;margin-bottom:3px;"></p>
+        <p id="avatar-role" style="font-size:12px;color:#8a91a8;"></p>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div id="profile-errors" class="hidden" style="padding:12px 16px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#fb7185;font-size:14px;margin-bottom:20px;"></div>
+    <div id="profile-success" class="hidden" style="padding:12px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;color:#34d399;font-size:14px;margin-bottom:20px;"></div>
+
+    <!-- Profile form -->
+    <div style="background:#141826;border:1px solid #262b3d;border-radius:16px;padding:28px;margin-bottom:24px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid #262b3d;">Account Details</h2>
+      <form id="profile-form">
+        <div style="margin-bottom:18px;">
+          <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:7px;">Full Name</label>
+          <input id="fullName" type="text" maxlength="80" required style="width:100%;padding:12px 14px;background:#0b0d17;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
         </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-          <input id="email" name="email" type="email" class="w-full px-4 py-2.5 bg-surface-900 border border-surface-700 rounded-xl text-gray-400 cursor-not-allowed" readonly />
+        <div style="margin-bottom:18px;">
+          <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:7px;">Email <span style="font-weight:400;color:#8a91a8;">(cannot be changed)</span></label>
+          <input id="email" type="email" disabled style="width:100%;padding:12px 14px;background:#0b0d17;border:1px solid #1c2030;border-radius:10px;color:#8a91a8;font-size:14px;outline:none;box-sizing:border-box;cursor:not-allowed;"/>
         </div>
-        <div>
-          <label for="role" class="block text-sm font-medium text-gray-300 mb-2">Role</label>
-          <input id="role" name="role" type="text" class="w-full px-4 py-2.5 bg-surface-900 border border-surface-700 rounded-xl text-gray-400 cursor-not-allowed" readonly />
+        <div style="margin-bottom:18px;">
+          <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:7px;">Account Role</label>
+          <input id="role" type="text" disabled style="width:100%;padding:12px 14px;background:#0b0d17;border:1px solid #1c2030;border-radius:10px;color:#8a91a8;font-size:14px;outline:none;box-sizing:border-box;cursor:not-allowed;"/>
         </div>
-        <div>
-          <label for="profileImageUrl" class="block text-sm font-medium text-gray-300 mb-2">Profile Image URL (optional)</label>
-          <input id="profileImageUrl" name="profileImageUrl" type="url" placeholder="https://example.com/avatar.jpg" class="w-full px-4 py-2.5 bg-surface-950/50 border border-surface-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all" maxlength="300" />
+        <div style="margin-bottom:24px;">
+          <label style="display:block;font-size:13px;font-weight:500;color:#8a91a8;margin-bottom:7px;">Profile Image URL <span style="font-weight:400;">(optional)</span></label>
+          <input id="profileImageUrl" type="url" maxlength="300" placeholder="https://example.com/avatar.jpg" style="width:100%;padding:12px 14px;background:#0b0d17;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+          <p style="font-size:12px;color:#8a91a8;margin-top:6px;">Paste a direct image URL. Changes your avatar shown in the nav.</p>
         </div>
-        <div class="pt-2 flex items-center justify-between gap-3 flex-wrap">
-          <div id="profile-preview" class="text-sm text-gray-400"></div>
-          <button id="save-profile-btn" type="submit" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-medium transition-all shadow-[0_0_15px_-3px_rgba(79,70,229,0.4)]">Save Changes</button>
-        </div>
+        <button id="save-profile-btn" type="submit" style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:14px;cursor:pointer;box-shadow:0 0 20px rgba(99,102,241,0.3);">Save Changes</button>
       </form>
     </div>
+
+    <!-- Danger zone -->
+    <div style="background:#141826;border:1px solid rgba(244,63,94,0.2);border-radius:16px;padding:28px;">
+      <h2 style="font-family:'Sora',sans-serif;font-size:0.95rem;font-weight:700;color:#f87171;margin-bottom:8px;">Danger Zone</h2>
+      <p style="font-size:13px;color:#8a91a8;margin-bottom:16px;">Permanently log out of all sessions.</p>
+      <button id="logout-all-btn" style="padding:10px 20px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#f87171;font-size:13px;font-weight:600;cursor:pointer;">Log Out Everywhere</button>
+    </div>
   </main>
-  <footer id="app-footer" class="mt-auto border-t border-white/5 bg-surface-950/50"></footer>
-  <script src="/js/common.js?v=5"></script>
-  <script src="/js/profile.js?v=1"></script>
+
+  <footer id="app-footer" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(11,13,23,0.6);"></footer>
+  <script src="/js/common.js?v=6"></script>
+  <script src="/js/profile.js?v=2"></script>
 </body>
 </html>
