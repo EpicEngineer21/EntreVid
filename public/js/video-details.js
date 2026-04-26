@@ -60,18 +60,33 @@
   const playerIframe = document.getElementById('video-player');
   const playerContainer = document.getElementById('player-container');
 
-  if (ytId) {
-    playerIframe.src = `https://www.youtube-nocookie.com/embed/${esc(ytId)}?rel=0&modestbranding=1`;
-  } else {
-    // Fallback: thumbnail click-to-YouTube
-    playerIframe.style.display = 'none';
-    const fallback = document.createElement('a');
-    fallback.href = v.youtubeUrl || '#';
-    fallback.target = '_blank';
-    fallback.rel = 'noopener noreferrer';
-    fallback.style.cssText = 'display:flex;align-items:center;justify-content:center;position:absolute;inset:0;background:#141826;color:#8a91a8;text-decoration:none;';
-    fallback.innerHTML = `<div style="text-align:center;"><div style="font-size:48px;margin-bottom:12px;">▶️</div><p style="font-size:14px;">Click to watch on YouTube</p></div>`;
-    playerContainer.appendChild(fallback);
+  if (ytId && playerIframe) {
+    // Use www.youtube.com/embed/ — matches CSP frameSrc whitelist
+    playerIframe.src = `https://www.youtube.com/embed/${esc(ytId)}?rel=0&modestbranding=1&enablejsapi=0`;
+    playerIframe.setAttribute('frameborder', '0');
+    playerIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    playerIframe.setAttribute('allowfullscreen', '');
+    playerIframe.setAttribute('loading', 'lazy');
+    // Handle embed errors (private/deleted videos)
+    playerIframe.addEventListener('error', () => showVideoUnavailable(playerContainer));
+  } else if (playerContainer) {
+    showVideoUnavailable(playerContainer);
+  }
+
+  function showVideoUnavailable(container) {
+    const iframe = container.querySelector('iframe');
+    if (iframe) iframe.style.display = 'none';
+    if (!container.querySelector('.vd-unavailable')) {
+      const msg = document.createElement('div');
+      msg.className = 'vd-unavailable';
+      msg.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0d17;gap:12px;';
+      msg.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#4b5563" stroke-width="1.5"><path d="M15 10l4.553-2.07A1 1 0 0121 8.845v6.308a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><line x1="2" y1="2" x2="22" y2="22" stroke="#f43f5e"/></svg>
+        <p style="font-size:14px;color:#6b7280;font-family:'Inter',sans-serif;">Video unavailable</p>
+        ${v.youtubeUrl ? `<a href="${esc(v.youtubeUrl)}" target="_blank" rel="noopener noreferrer" style="font-size:13px;color:#818cf8;text-decoration:none;">Watch on YouTube ↗</a>` : ''}
+      `;
+      container.appendChild(msg);
+    }
   }
 
   // ── Category, title, date ─────────────────────────────────────

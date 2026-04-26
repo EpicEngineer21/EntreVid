@@ -275,7 +275,7 @@ async function sendPasswordResetEmail(toEmail, otpCode, fullName) {
 if (IS_PROD) app.set('trust proxy', 1);
 
 // ── Security headers (Helmet) ─────────────────────────────────
-// CSP is tuned for EJS inline scripts, Google Fonts, YouTube embeds.
+// CSP tuned for Google Fonts, YouTube embeds (both domains), thumbnail CDNs.
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -283,8 +283,8 @@ app.use(helmet({
       scriptSrc:   ["'self'", "'unsafe-inline'"],
       styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc:      ["'self'", 'data:', 'https://img.youtube.com', 'https://i.ytimg.com'],
-      frameSrc:    ['https://www.youtube.com'],
+      imgSrc:      ["'self'", 'data:', 'https://img.youtube.com', 'https://i.ytimg.com', 'https://i3.ytimg.com', 'https://i9.ytimg.com', 'https://lh3.googleusercontent.com'],
+      frameSrc:    ['https://www.youtube.com', 'https://www.youtube-nocookie.com'],
       connectSrc:  ["'self'"],
       objectSrc:   ["'none'"],
     },
