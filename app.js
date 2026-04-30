@@ -16,6 +16,7 @@ const nodemailer = require('nodemailer');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const cors       = require('cors');
+const { MongoStore } = require('connect-mongo');
 
 // DB and Models
 const connectDB   = require('./src/config/db');
@@ -316,11 +317,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // ── Session (hardened) ────────────────────────────────────────
+// Sessions stored in MongoDB via connect-mongo so they survive
+// server restarts and Render spin-downs. Without this, pendingEmail
+// and resetEmail are wiped on every restart — breaking OTP flows.
 app.use(session({
   secret:            process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave:            false,
   saveUninitialized: false,
   name:              'evid.sid',   // don't expose 'connect.sid'
+  store:             MongoStore.create({
+    mongoUrl:        process.env.MONGODB_URI,
+    collectionName:  'sessions',
+    ttl:             7 * 24 * 60 * 60, // 7 days (seconds)
+    autoRemove:      'native',         // MongoDB TTL index handles cleanup
+  }),
   cookie: {
     httpOnly: true,                // no JS access to cookie
     secure:   IS_PROD,             // HTTPS-only in production
