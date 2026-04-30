@@ -279,14 +279,16 @@ if (IS_PROD) app.set('trust proxy', 1);
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc:  ["'self'"],
-      scriptSrc:   ["'self'", "'unsafe-inline'"],
-      styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc:      ["'self'", 'data:', 'https://img.youtube.com', 'https://i.ytimg.com', 'https://i3.ytimg.com', 'https://i9.ytimg.com', 'https://lh3.googleusercontent.com'],
-      frameSrc:    ['https://www.youtube.com', 'https://www.youtube-nocookie.com'],
-      connectSrc:  ["'self'"],
-      objectSrc:   ["'none'"],
+      defaultSrc:     ["'self'"],
+      scriptSrc:      ["'self'", "'unsafe-inline'", 'https://www.youtube.com', 'https://s.ytimg.com'],
+      scriptSrcAttr:  ["'unsafe-inline'"], // YouTube iframe player uses inline event handlers
+      styleSrc:       ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc:        ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc:         ["'self'", 'data:', 'https://img.youtube.com', 'https://i.ytimg.com', 'https://i3.ytimg.com', 'https://i9.ytimg.com', 'https://lh3.googleusercontent.com', 'https://*.ytimg.com'],
+      frameSrc:       ['https://www.youtube.com', 'https://www.youtube-nocookie.com'],
+      connectSrc:     ["'self'", 'https://www.youtube.com', 'https://www.google.com'],
+      objectSrc:      ["'none'"],
+      workerSrc:      ["'self'", 'blob:'], // YouTube may use blob: workers
     },
   },
   crossOriginEmbedderPolicy: false, // required for YouTube iframes
@@ -614,8 +616,21 @@ app.get('/api/videos', async (req, res) => {
       ];
     }
 
-    const videos = await Video.find(query);
-    const allVideos = await Video.find({ status: 'published' });
+    const videosDocs = await Video.find(query);
+    const allVideosDocs = await Video.find({ status: 'published' });
+
+    // Normalise youtubeId on the way out so old records (full URL or blank) still work
+    function normalizeVideoOut(v) {
+      const obj = v.toObject ? v.toObject() : { ...v };
+      if (!obj.youtubeId || obj.youtubeId.length !== 11) {
+        const extracted = extractYouTubeId(obj.youtubeId || obj.youtubeUrl || '');
+        if (extracted) obj.youtubeId = extracted;
+      }
+      return obj;
+    }
+
+    const videos = videosDocs.map(normalizeVideoOut);
+    const allVideos = allVideosDocs.map(normalizeVideoOut);
     
     const categories = [...new Set(allVideos.map(v => v.category))].sort();
     const featuredVideos = allVideos.filter(v => v.featured);
@@ -682,7 +697,18 @@ app.post('/api/auth/signup', rl.signup, async (req, res) => {
     });
 
     const otp = await createOtp(email);
-    await sendOtpEmail(email, otp, fullName);
+    const emailResult = await sendOtpEmail(email, otp, fullName);
+
+    // In dev mode — always print OTP to server console so you can verify without SMTP
+    if (!IS_PROD) {
+      console.log(`\n  📨  [DEV] Signup OTP for ${email}: ${otp}\n`);
+    }
+
+    if (!emailResult.success) {
+      console.error('  ❌  Failed to send signup OTP email:', emailResult.error);
+      // Don't block the user — OTP is saved in DB; they can use Resend Code
+      // but show a warning so they know to check spam or wait
+    }
 
     await logAudit('SIGNUP', { userId: newUser.id, email, ip: getIp(req), userAgent: req.headers['user-agent'] });
     req.session.pendingEmail = email;
@@ -691,7 +717,9 @@ app.post('/api/auth/signup', rl.signup, async (req, res) => {
     req.session.save(() => {
       res.json({
         ok: true,
-        message: 'Account created! Check your email for verification code.',
+        message: emailResult.success
+          ? 'Account created! Check your email for the verification code.'
+          : 'Account created! We had trouble sending the email — please use "Resend Code" on the next page.',
         next: '/verify-email',
       });
     });
@@ -842,10 +870,22 @@ app.post('/api/auth/resend-otp', rl.resendOtp, async (req, res) => {
 
     const otp         = await createOtp(email);
     const emailResult = await sendOtpEmail(email, otp, user.fullName);
+
+    // Dev-mode console fallback
+    if (!IS_PROD) {
+      console.log(`\n  📨  [DEV] Resend OTP for ${email}: ${otp}\n`);
+    }
+
     if (emailResult.success) {
       res.json({ ok: true, message: 'A new verification code has been sent to your email! 📧' });
     } else {
-      res.status(500).json({ ok: false, errors: ['Failed to send email. Please try again later.'] });
+      // Even if email failed, OTP is saved — tell the user to check server logs in dev
+      res.json({
+        ok: true,
+        message: !IS_PROD
+          ? `Email service unavailable — check server console for your OTP code.`
+          : 'Failed to send email. Please try again later.',
+      });
     }
   } catch (error) {
     console.error('Resend OTP error:', error);
@@ -877,13 +917,24 @@ app.post('/api/auth/forgot-password', rl.forgotPassword, async (req, res) => {
 
     const otp         = await createResetOtp(email);
     const emailResult = await sendPasswordResetEmail(email, otp, user.fullName);
-    if (!emailResult.success) {
-      return res.status(500).json({ ok: false, errors: ['Failed to send reset email. Please try again later.'] });
+
+    // Dev-mode console fallback — always log reset OTP
+    if (!IS_PROD) {
+      console.log(`\n  🔑  [DEV] Password Reset OTP for ${email}: ${otp}\n`);
     }
 
     await logAudit('FORGOT_PASSWORD_REQUEST', { userId: user.id, email, ip: getIp(req), userAgent: req.headers['user-agent'] });
     req.session.resetEmail = email;
     req.session.save(() => {
+      if (!emailResult.success) {
+        return res.json({
+          ok: true,
+          message: !IS_PROD
+            ? 'Email service unavailable — check the server console for your reset code.'
+            : 'Failed to send reset email. Please try again later.',
+          next: '/reset-password',
+        });
+      }
       res.json({ ok: true, message: successMsg, next: '/reset-password' });
     });
   } catch (error) {
@@ -949,12 +1000,19 @@ app.get('/api/videos/:id', async (req, res) => {
     }
     if (!video) return res.status(404).json({ ok: false, errors: ['Video not found.'] });
 
+    // Normalise youtubeId — old records may have it empty or as a full URL
+    const videoObj = video.toObject ? video.toObject() : { ...video };
+    if (!videoObj.youtubeId || videoObj.youtubeId.length !== 11) {
+      const extracted = extractYouTubeId(videoObj.youtubeId || videoObj.youtubeUrl || '');
+      if (extracted) videoObj.youtubeId = extracted;
+    }
+
     const owner = video.ownerUserId ? await User.findOne({ id: video.ownerUserId }) : null;
 
     res.json({
       ok: true,
       data: {
-        video,
+        video: videoObj,
         owner: owner ? { id: owner.id, fullName: owner.fullName, role: owner.role || 'user' } : null,
       },
     });
