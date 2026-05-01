@@ -51,7 +51,7 @@
         <p style="font-size:14px;color:#8a91a8;margin-bottom:28px;">Don't have an account? <a href="/signup" style="color:#818cf8;text-decoration:none;font-weight:500;">Sign up free</a></p>
 
         <!-- Error -->
-        <div id="error-container" class="hidden" style="padding:12px 16px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#fb7185;font-size:14px;margin-bottom:20px;display:flex;align-items:center;gap:8px;">
+        <div id="error-container" style="padding:12px 16px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.25);border-radius:10px;color:#fb7185;font-size:14px;margin-bottom:20px;display:none;align-items:center;gap:8px;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <span id="error-text"></span>
         </div>
@@ -78,7 +78,18 @@
               <label style="font-size:13px;font-weight:500;color:#8a91a8;">Password</label>
               <a href="/forgot-password" style="font-size:12px;color:#818cf8;text-decoration:none;">Forgot password?</a>
             </div>
-            <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" required style="width:100%;padding:12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+            <div style="position:relative;">
+              <input type="password" id="password" autocomplete="current-password" placeholder="••••••••" required style="width:100%;padding:12px 40px 12px 14px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#e6e8ef;font-size:14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#262b3d'"/>
+              <button type="button" id="toggle-password" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8a91a8;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;transition:color 0.2s;" onmouseover="this.style.color='#e6e8ef'" onmouseout="this.style.color='#8a91a8'">
+                <svg id="eye-icon-show" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg id="eye-icon-hide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:none;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div style="margin-bottom:24px;"></div>
           <button type="submit" id="login-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:600;font-size:15px;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Log In</button>
@@ -93,7 +104,7 @@
       .auth-brand-panel{display:none!important;}
     }
   </style>
-  <script src="/js/common.js?v=7"></script>
-  <script src="/js/login.js?v=3"></script>
+  <script src="/js/common.js?v=2"></script>
+  <script src="/js/login.js?v=2"></script>
 </body>
 </html>

@@ -61,11 +61,13 @@
     updateTabs();
     const list = currentFilter === 'all' ? allApps : allApps.filter(a => a.status === currentFilter);
     if (!list.length) {
-      listEl?.classList.add('hidden'); emptyEl?.classList.remove('hidden');
+      if (listEl) { listEl.classList.add('hidden'); listEl.style.display = 'none'; listEl.innerHTML = ''; }
+      if (emptyEl) { emptyEl.classList.remove('hidden'); emptyEl.style.display = 'block'; }
       if (emptyTitle) emptyTitle.textContent = currentFilter==='pending' ? 'All caught up!' : 'Nothing here.';
       return;
     }
-    emptyEl?.classList.add('hidden'); listEl?.classList.remove('hidden');
+    if (emptyEl) { emptyEl.classList.add('hidden'); emptyEl.style.display = 'none'; }
+    if (listEl) { listEl.classList.remove('hidden'); listEl.style.display = 'flex'; }
 
     const esc = window.escapeHtml;
     const COLORS = ['#6366f1','#a855f7','#10b981','#f59e0b','#f43f5e','#06b6d4'];

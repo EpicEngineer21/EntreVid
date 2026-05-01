@@ -1,34 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Admin Panel | EntreVid</title>
-  <meta name="description" content="Manage entrepreneur applications and platform content."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/css/base.css"/>
-  <link rel="stylesheet" href="/css/layout.css"/>
-  <link rel="stylesheet" href="/css/components.css"/>
+  <meta name="description" content="Manage entrepreneur applications and platform content." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
 </head>
-<body style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
-  <nav id="main-nav" style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);"></nav>
+
+<body
+  style="background:#0b0d17;color:#e6e8ef;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;">
+  <nav id="main-nav"
+    style="position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);background:rgba(11,13,23,0.85);border-bottom:1px solid rgba(255,255,255,0.06);">
+  </nav>
 
   <main style="flex:1;max-width:1100px;margin:0 auto;padding:48px 24px;width:100%;box-sizing:border-box;">
     <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;">
+    <div
+      style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;">
       <div>
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
-          <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));border:1px solid rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#818cf8" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div
+            style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));border:1px solid rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+              stroke="#818cf8" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
           </div>
           <h1 style="font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;">Admin Panel</h1>
         </div>
         <p style="color:#8a91a8;font-size:14px;">Review entrepreneur verification requests</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#8a91a8;font-size:13px;font-weight:500;text-decoration:none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <a href="/dashboard"
+        style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;background:#141826;border:1px solid #262b3d;border-radius:10px;color:#8a91a8;font-size:13px;font-weight:500;text-decoration:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+        </svg>
         Dashboard
       </a>
     </div>
@@ -36,42 +55,68 @@
     <!-- KPI Cards -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:36px;">
       <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
-        <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Pending</p>
+        <p
+          style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">
+          Pending</p>
         <p id="kpi-pending" style="font-family:'Sora',sans-serif;font-size:2rem;font-weight:700;color:#f59e0b;">0</p>
       </div>
       <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
-        <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Approved</p>
+        <p
+          style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">
+          Approved</p>
         <p id="kpi-approved" style="font-family:'Sora',sans-serif;font-size:2rem;font-weight:700;color:#10b981;">0</p>
       </div>
       <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
-        <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Rejected</p>
+        <p
+          style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">
+          Rejected</p>
         <p id="kpi-rejected" style="font-family:'Sora',sans-serif;font-size:2rem;font-weight:700;color:#f43f5e;">0</p>
       </div>
       <div style="background:#141826;border:1px solid #262b3d;border-radius:14px;padding:20px;">
-        <p style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Total</p>
+        <p
+          style="font-size:12px;color:#8a91a8;font-weight:500;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">
+          Total</p>
         <p id="kpi-total" style="font-family:'Sora',sans-serif;font-size:2rem;font-weight:700;color:#fff;">0</p>
       </div>
     </div>
 
     <!-- Filter Tabs -->
     <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
-      <button id="tab-pending" class="admin-tab" data-filter="pending" style="padding:8px 18px;border-radius:999px;border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.1);color:#f59e0b;font-size:13px;font-weight:600;cursor:pointer;">⏳ Pending</button>
-      <button id="tab-approved" class="admin-tab" data-filter="approved" style="padding:8px 18px;border-radius:999px;border:1px solid rgba(16,185,129,0.2);background:transparent;color:#8a91a8;font-size:13px;font-weight:500;cursor:pointer;">✅ Approved</button>
-      <button id="tab-rejected" class="admin-tab" data-filter="rejected" style="padding:8px 18px;border-radius:999px;border:1px solid rgba(244,63,94,0.2);background:transparent;color:#8a91a8;font-size:13px;font-weight:500;cursor:pointer;">❌ Rejected</button>
-      <button id="tab-all" class="admin-tab" data-filter="all" style="padding:8px 18px;border-radius:999px;border:1px solid #262b3d;background:transparent;color:#8a91a8;font-size:13px;font-weight:500;cursor:pointer;">All</button>
+      <button id="tab-pending" class="admin-tab" data-filter="pending"
+        style="padding:8px 18px;border-radius:999px;border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.1);color:#f59e0b;font-size:13px;font-weight:600;cursor:pointer;">⏳
+        Pending</button>
+      <button id="tab-approved" class="admin-tab" data-filter="approved"
+        style="padding:8px 18px;border-radius:999px;border:1px solid rgba(16,185,129,0.2);background:transparent;color:#8a91a8;font-size:13px;font-weight:500;cursor:pointer;">✅
+        Approved</button>
+      <button id="tab-rejected" class="admin-tab" data-filter="rejected"
+        style="padding:8px 18px;border-radius:999px;border:1px solid rgba(244,63,94,0.2);background:transparent;color:#8a91a8;font-size:13px;font-weight:500;cursor:pointer;">❌
+        Rejected</button>
+      <button id="tab-all" class="admin-tab" data-filter="all"
+        style="padding:8px 18px;border-radius:999px;border:1px solid #262b3d;background:transparent;color:#8a91a8;font-size:13px;font-weight:500;cursor:pointer;">All</button>
     </div>
 
     <!-- Loading -->
     <div id="loading-state" style="text-align:center;padding:64px;color:#8a91a8;">
-      <div style="width:40px;height:40px;border-radius:50%;border:2px solid rgba(99,102,241,0.2);border-top-color:#6366f1;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+      <div
+        style="width:40px;height:40px;border-radius:50%;border:2px solid rgba(99,102,241,0.2);border-top-color:#6366f1;animation:spin 0.8s linear infinite;margin:0 auto 16px;">
+      </div>
       <p>Loading applications…</p>
     </div>
-    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    <style>
+      @keyframes spin {
+        to {
+          transform: rotate(360deg)
+        }
+      }
+    </style>
 
     <!-- Empty state -->
-    <div id="empty-state" class="hidden" style="text-align:center;padding:64px;background:#141826;border:1px solid #262b3d;border-radius:16px;">
+    <div id="empty-state" class="hidden"
+      style="text-align:center;padding:64px;background:#141826;border:1px solid #262b3d;border-radius:16px;">
       <div style="font-size:48px;margin-bottom:12px;">✅</div>
-      <h3 id="empty-title" style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px;">All caught up!</h3>
+      <h3 id="empty-title"
+        style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px;">All caught
+        up!</h3>
       <p style="color:#8a91a8;font-size:14px;">No applications in this view.</p>
     </div>
 
@@ -80,7 +125,8 @@
   </main>
 
   <footer id="app-footer" style="border-top:1px solid rgba(255,255,255,0.05);background:rgba(11,13,23,0.6);"></footer>
-  <script src="/js/common.js?v=7"></script>
-  <script src="/js/admin-applications.js?v=7"></script>
+  <script src="/js/common.js?v=2"></script>
+  <script src="/js/admin-applications.js?v=2"></script>
 </body>
+
 </html>

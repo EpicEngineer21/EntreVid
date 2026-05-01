@@ -9,7 +9,7 @@
   window.renderFooter();
 
   // ── Resolve video ID ──────────────────────────────────────────
-  const params  = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search);
   const videoId = params.get('id') || window.location.pathname.split('/').filter(Boolean).pop();
 
   const loadingEl = document.getElementById('loading-state');
@@ -33,12 +33,12 @@
     return;
   }
 
-  const v       = payload.data.video;
-  const owner   = payload.data.owner;
+  const v = payload.data.video;
+  const owner = payload.data.owner;
   const currUser = window.App.currentUser || {};
   const isOwner = v.ownerUserId === currUser.id;
   const isAdmin = currUser.role === 'admin';
-  const esc     = window.escapeHtml;
+  const esc = window.escapeHtml;
 
   // ── Update page title ─────────────────────────────────────────
   document.title = `${v.title} | EntreVid`;
@@ -62,11 +62,12 @@
 
   if (ytId && playerIframe) {
     // Use www.youtube.com/embed/ — matches CSP frameSrc whitelist
-    playerIframe.src = `https://www.youtube.com/embed/${esc(ytId)}?rel=0&modestbranding=1&enablejsapi=0`;
+    const originUrl = encodeURIComponent(window.location.origin);
+    playerIframe.src = `https://www.youtube.com/embed/${esc(ytId)}?rel=0&modestbranding=1&enablejsapi=0&origin=${originUrl}&autoplay=1&mute=1`;
     playerIframe.setAttribute('frameborder', '0');
     playerIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    playerIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     playerIframe.setAttribute('allowfullscreen', '');
-    playerIframe.setAttribute('loading', 'lazy');
     // Handle embed errors (private/deleted videos)
     playerIframe.addEventListener('error', () => showVideoUnavailable(playerContainer));
   } else if (playerContainer) {
@@ -122,13 +123,13 @@
     ? v.tags
     : (v.tags || '').split(/[,\s]+/).filter(Boolean);
   if (tagsEl && tagList.length > 0) {
-    tagsEl.innerHTML = tagList.map(t => `<span class="vd-hashtag">#${esc(t.replace(/^#/,'').trim())}</span>`).join('');
+    tagsEl.innerHTML = tagList.map(t => `<span class="vd-hashtag">#${esc(t.replace(/^#/, '').trim())}</span>`).join('');
   }
 
   // ── Like / Save / Share buttons ───────────────────────────────
-  const vid       = v._id || v.id || videoId;
-  const WL_KEY    = 'ev_watchlist';
-  const HIST_KEY  = 'ev_history';
+  const vid = v._id || v.id || videoId;
+  const WL_KEY = 'ev_watchlist';
+  const HIST_KEY = 'ev_history';
   const LIKES_KEY = 'ev_likes';
 
   function getList(k) { return JSON.parse(localStorage.getItem(k) || '[]'); }
@@ -140,7 +141,7 @@
   setList(HIST_KEY, hist.slice(0, 50));
 
   // Like button
-  const likeBtn   = document.getElementById('like-btn');
+  const likeBtn = document.getElementById('like-btn');
   const likeCountEl = document.getElementById('like-count');
   let localLikes = likeCount;
 
@@ -199,7 +200,7 @@
   document.getElementById('share-btn')?.addEventListener('click', () => {
     navigator.clipboard?.writeText(window.location.href)
       .then(() => window.showFlash('success', 'Link copied to clipboard!'))
-      .catch(() => {});
+      .catch(() => { });
   });
 
   // Comment CTA — hide if logged in
@@ -230,7 +231,7 @@
   const founderName = v.entrepreneur || (owner && owner.fullName) || v.submittedBy || 'Unknown';
   const founderCompany = v.category || '';
   const initials = founderName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-  const COLORS = ['#6366f1','#a855f7','#10b981','#f59e0b','#f43f5e','#06b6d4'];
+  const COLORS = ['#6366f1', '#a855f7', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4'];
   const avatarColor = COLORS[founderName.charCodeAt(0) % COLORS.length];
 
   const avatarEl = document.getElementById('founder-avatar');
@@ -273,8 +274,8 @@
   contentEl?.classList.remove('hidden');
 
   // ── Related Videos ────────────────────────────────────────────
-  const relLoadEl  = document.getElementById('related-loading');
-  const relListEl  = document.getElementById('related-list');
+  const relLoadEl = document.getElementById('related-loading');
+  const relListEl = document.getElementById('related-list');
   const relEmptyEl = document.getElementById('related-empty');
 
   try {
@@ -302,9 +303,9 @@
         // youtubeId in the list is already a clean ID, youtubeUrl is the full URL
         const rvYtId = extractYtId(rv.youtubeId) || extractYtId(rv.youtubeUrl || '');
         const thumb = rvYtId ? `https://img.youtube.com/vi/${esc(rvYtId)}/mqdefault.jpg` : '';
-        const rvViews = seededRand((rvId||'x') + 'v', 800, 48000);
-        const rvLikes = Math.floor(rvViews * (0.04 + seededRand((rvId||'x') + 'l', 0, 8) / 100));
-        const dur = `${Math.floor(seededRand((rvId||'x') + 'd', 3, 22))}:${String(seededRand((rvId||'x') + 's', 0, 59)).padStart(2,'0')}`;
+        const rvViews = seededRand((rvId || 'x') + 'v', 800, 48000);
+        const rvLikes = Math.floor(rvViews * (0.04 + seededRand((rvId || 'x') + 'l', 0, 8) / 100));
+        const dur = `${Math.floor(seededRand((rvId || 'x') + 'd', 3, 22))}:${String(seededRand((rvId || 'x') + 's', 0, 59)).padStart(2, '0')}`;
         return `
           <a class="vd-related-card" href="/video-details.html?id=${esc(rvId)}">
             <div class="vd-related-thumb">
@@ -316,14 +317,14 @@
               <p class="vd-related-title">${esc(rv.title)}</p>
               <p class="vd-related-author">${esc(rv.entrepreneur || rv.submittedBy || 'Anonymous')}</p>
               <div class="vd-related-stats">
-                <span>👁 ${rvViews >= 1000 ? (rvViews/1000).toFixed(1)+'K' : rvViews}</span>
-                <span>♥ ${rvLikes >= 1000 ? (rvLikes/1000).toFixed(1)+'K' : rvLikes}</span>
+                <span>👁 ${rvViews >= 1000 ? (rvViews / 1000).toFixed(1) + 'K' : rvViews}</span>
+                <span>♥ ${rvLikes >= 1000 ? (rvLikes / 1000).toFixed(1) + 'K' : rvLikes}</span>
               </div>
             </div>
           </a>`;
       }).join('');
     }
-  } catch(e) {
+  } catch (e) {
     if (relLoadEl) relLoadEl.style.display = 'none';
     relEmptyEl?.classList.remove('hidden');
   }
