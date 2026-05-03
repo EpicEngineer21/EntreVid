@@ -1,4 +1,4 @@
-/**
+﻿/**
  * EntreVid — Shared Frontend Utilities
  * Provides: CSRF, auth context, role-aware nav, footer, flash messages, fetch helpers.
  */
@@ -187,127 +187,123 @@ window.confirmAction = async function confirmAction(options) {
   return window.confirm(`${title}\n\n${message}`);
 };
 
-// ── Role-aware Navigation ────────────────────────────────────
+// -- Role-aware Navigation --
 window.renderNav = function renderNav(user, activePage) {
   const nav = document.getElementById('main-nav');
   if (!nav) return;
 
   const esc = escapeHtml;
-  const active = (page) => activePage === page
-    ? 'text-white bg-white/10'
-    : 'text-gray-400 hover:text-white hover:bg-white/5';
 
-  // ── Core public links ──
   const coreLinks = [
-    { href: '/',          id: 'nav-home',     page: 'home',     label: 'Home' },
-    { href: '/browse',    id: 'nav-browse',   page: 'browse',   label: 'Browse' },
-    { href: '/founders',  id: 'nav-founders', page: 'founders', label: 'Founders' },
-    { href: '/about',     id: 'nav-about',    page: 'about',    label: 'About' },
-    { href: '/contact',   id: 'nav-contact',  page: 'contact',  label: 'Contact' },
+    { href: '/',         id: 'nav-home',     page: 'home',     label: 'Home' },
+    { href: '/browse',   id: 'nav-browse',   page: 'browse',   label: 'Browse' },
+    { href: '/founders', id: 'nav-founders', page: 'founders', label: 'Founders' },
+    { href: '/about',    id: 'nav-about',    page: 'about',    label: 'About' },
+    { href: '/contact',  id: 'nav-contact',  page: 'contact',  label: 'Contact' },
   ];
 
-  const desktopCoreLinks = coreLinks.map(l =>
-    `<a href="${l.href}" id="${l.id}" class="nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active(l.page)}">${l.label}</a>`
-  ).join('');
+  const dLinkStyle = (page) =>
+    'display:inline-flex;align-items:center;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;transition:background 0.2s,color 0.2s;' +
+    (activePage === page
+      ? 'color:#fff;background:rgba(255,255,255,0.1);'
+      : 'color:#9ca3af;background:transparent;');
 
-  const mobileCoreLinks = coreLinks.map(l =>
-    `<a href="${l.href}" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active(l.page)} transition-colors">${l.label}</a>`
+  const mLinkStyle = (page) =>
+    'display:block;padding:11px 16px;border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;margin-bottom:2px;' +
+    (activePage === page
+      ? 'color:#fff;background:rgba(255,255,255,0.1);'
+      : 'color:#d1d5db;background:transparent;');
+
+  const dLinks = coreLinks.map(l =>
+    `<a href="${l.href}" id="${l.id}" style="${dLinkStyle(l.page)}">${l.label}</a>`
+  ).join('');
+  const mLinks = coreLinks.map(l =>
+    `<a href="${l.href}" style="${mLinkStyle(l.page)}">${l.label}</a>`
   ).join('');
 
   let extraDesktop = '';
-  let extraMobile = '';
-  let authSection = '';
+  let extraMobile  = '';
+  let authSection  = '';
   let mobileAuthSection = '';
 
   if (user) {
     const role = user.role || 'user';
     if (role === 'verified_entrepreneur' || role === 'admin') {
-      extraDesktop += `<a href="/submit" id="nav-submit" class="nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('submit')}">Upload</a>
-        <a href="/dashboard" id="nav-dashboard" class="nav-link px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('dashboard')}">Dashboard</a>`;
-      extraMobile += `<a href="/submit" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('submit')} transition-colors">Upload Video</a>
-        <a href="/dashboard" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('dashboard')} transition-colors">Dashboard</a>`;
+      extraDesktop += `<a href="/submit" id="nav-submit" style="${dLinkStyle('submit')}">Upload</a>
+        <a href="/dashboard" id="nav-dashboard" style="${dLinkStyle('dashboard')}">Dashboard</a>`;
+      extraMobile  += `<a href="/submit" style="${mLinkStyle('submit')}">Upload Video</a>
+        <a href="/dashboard" style="${mLinkStyle('dashboard')}">Dashboard</a>`;
     } else {
-      extraDesktop += `<a href="/apply" id="nav-apply" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all duration-200">Apply</a>`;
-      extraMobile += `<a href="/apply" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-amber-400 hover:bg-amber-500/10 transition-colors">Apply to Upload</a>`;
+      extraDesktop += `<a href="/apply" id="nav-apply" style="display:inline-flex;align-items:center;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;color:#fbbf24;">Apply</a>`;
+      extraMobile  += `<a href="/apply" style="${mLinkStyle('')}color:#fbbf24;">Apply to Upload</a>`;
     }
     if (role === 'admin') {
-      extraDesktop += `<a href="/admin/applications" id="nav-admin" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-all duration-200">Admin</a>`;
-      extraMobile += `<a href="/admin/applications" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-purple-400 hover:bg-purple-500/10 transition-colors">Admin Panel</a>`;
+      extraDesktop += `<a href="/admin/applications" id="nav-admin" style="display:inline-flex;align-items:center;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;color:#c084fc;">Admin</a>`;
+      extraMobile  += `<a href="/admin/applications" style="${mLinkStyle('')}color:#c084fc;">Admin Panel</a>`;
     }
 
     let roleBadge = '';
-    if (role === 'verified_entrepreneur') roleBadge = `<span class="inline-flex px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">✓</span>`;
-    if (role === 'admin') roleBadge = `<span class="inline-flex px-1.5 py-0.5 rounded-full bg-purple-500/15 text-purple-400 text-[10px] font-semibold border border-purple-500/20">👑</span>`;
+    if (role === 'verified_entrepreneur') roleBadge = `<span style="display:inline-flex;padding:2px 6px;border-radius:999px;background:rgba(16,185,129,0.15);color:#34d399;font-size:10px;font-weight:700;border:1px solid rgba(16,185,129,0.2);">checked</span>`;
+    if (role === 'admin') roleBadge = `<span style="display:inline-flex;padding:2px 6px;border-radius:999px;background:rgba(168,85,247,0.15);color:#c084fc;font-size:10px;font-weight:700;border:1px solid rgba(168,85,247,0.2);">admin</span>`;
 
-    const initial = esc(user.fullName.charAt(0).toUpperCase());
+    const initial   = esc(user.fullName.charAt(0).toUpperCase());
     const firstName = esc(user.fullName.split(' ')[0]);
-    const avatar = user.profileImageUrl
-      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-800" onerror="this.style.display='none'" />`
-      : `<div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-accent-500 flex items-center justify-center text-white text-xs font-bold ring-2 ring-surface-800">${initial}</div>`;
+    const avatar    = user.profileImageUrl
+      ? `<img src="${esc(user.profileImageUrl)}" alt="Profile" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.1);" onerror="this.style.display='none'" />`
+      : `<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;">${initial}</div>`;
 
     authSection = `
-      <div class="w-px h-6 bg-white/10 mx-1"></div>
-      <a href="/profile" class="flex items-center gap-2 px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/5">
+      <div style="width:1px;height:24px;background:rgba(255,255,255,0.1);margin:0 4px;"></div>
+      <a href="/profile" style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;text-decoration:none;">
         ${avatar}
-        <div class="flex items-center gap-1.5">
-          <span class="text-sm font-medium text-gray-300 max-w-[90px] truncate">${firstName}</span>
-          ${roleBadge}
-        </div>
+        <span style="font-size:13px;font-weight:500;color:#d1d5db;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${firstName}</span>
+        ${roleBadge}
       </a>
-      <button id="nav-logout-btn" class="ml-1 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200">Logout</button>`;
+      <button id="nav-logout-btn" style="margin-left:4px;padding:8px 12px;border-radius:8px;border:none;background:none;font-size:14px;font-weight:500;color:#f87171;cursor:pointer;">Logout</button>`;
 
     mobileAuthSection = `
-      <div class="border-t border-white/5 my-2 pt-2">
-        <a href="/profile" class="px-4 py-2.5 flex items-center gap-3 rounded-lg hover:bg-white/5 transition-colors">
+      <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:8px;padding-top:12px;">
+        <a href="/profile" style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:8px;text-decoration:none;margin-bottom:4px;">
           ${avatar}
           <div>
-            <div class="text-sm font-medium text-white">${esc(user.fullName)} ${roleBadge}</div>
-            <div class="text-xs text-gray-500">${esc(user.email)}</div>
+            <div style="font-size:14px;font-weight:600;color:#fff;">${esc(user.fullName)}</div>
+            <div style="font-size:12px;color:#6b7280;margin-top:2px;">${esc(user.email)}</div>
           </div>
         </a>
-        <button id="nav-logout-btn-mobile" class="w-full text-left block px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors">Logout</button>
+        <button id="nav-logout-btn-mobile" style="width:100%;text-align:left;display:block;padding:10px 16px;border-radius:8px;border:none;background:none;font-size:15px;font-weight:500;color:#f87171;cursor:pointer;">Logout</button>
       </div>`;
   } else {
     authSection = `
-      <div class="w-px h-6 bg-white/10 mx-1"></div>
-      <a href="/login" id="nav-login" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${active('login')}">Log In</a>
-      <a href="/signup" id="nav-signup" class="ml-1 px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-500 hover:to-accent-500 text-white transition-all shadow-md shadow-brand-500/20 hover:-translate-y-0.5 btn-glow">Sign Up</a>`;
+      <div style="width:1px;height:24px;background:rgba(255,255,255,0.1);margin:0 4px;"></div>
+      <a href="/login" id="nav-login" style="${dLinkStyle('login')}">Log In</a>
+      <a href="/signup" id="nav-signup" style="display:inline-flex;align-items:center;margin-left:4px;padding:8px 18px;border-radius:10px;font-size:14px;font-weight:600;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;text-decoration:none;">Sign Up</a>`;
     mobileAuthSection = `
-      <div class="border-t border-white/5 my-2 pt-2">
-        <a href="/login" class="block px-4 py-2.5 rounded-lg text-sm font-medium ${active('login')} transition-colors">Log In</a>
-        <a href="/signup" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-brand-400 hover:bg-brand-500/10 transition-colors">Sign Up</a>
+      <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:8px;padding-top:12px;">
+        <a href="/login" style="${mLinkStyle('login')}">Log In</a>
+        <a href="/signup" style="display:block;padding:12px 16px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;color:#fff;background:linear-gradient(135deg,#6366f1,#a855f7);text-align:center;margin-top:8px;">Sign Up</a>
       </div>`;
   }
 
-  // Inject nav-specific responsive CSS once
+  // Inject responsive CSS
   if (!document.getElementById('ev-nav-style')) {
     const s = document.createElement('style');
     s.id = 'ev-nav-style';
     s.textContent = `
-      #nav-desktop-links,#nav-desktop-right{display:none;}
-      #nav-mobile-btn{display:flex;}
+      #nav-desktop-links,#nav-desktop-right{display:none!important;}
+      #nav-mobile-btn{display:flex!important;}
       @media(min-width:1024px){
-        #nav-desktop-links{display:flex;align-items:center;gap:2px;}
-        #nav-desktop-right{display:flex;align-items:center;gap:4px;}
-        #nav-mobile-btn{display:none;}
+        #nav-desktop-links{display:flex!important;align-items:center;gap:2px;}
+        #nav-desktop-right{display:flex!important;align-items:center;gap:4px;}
+        #nav-mobile-btn{display:none!important;}
       }
-      .ev-nav-link{display:flex;align-items:center;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;transition:background 0.2s,color 0.2s;color:#9ca3af;}
-      .ev-nav-link:hover{background:rgba(255,255,255,0.05);color:#fff;}
-      .ev-nav-link.active{background:rgba(255,255,255,0.1);color:#fff;}
-      .ev-mobile-link{display:block;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;color:#9ca3af;transition:background 0.2s,color 0.2s;}
-      .ev-mobile-link:hover{background:rgba(255,255,255,0.05);color:#fff;}
-      .ev-mobile-link.active{background:rgba(255,255,255,0.1);color:#fff;}
     `;
     document.head.appendChild(s);
   }
 
-  const mkActive = (page) => activePage === page ? ' active' : '';
-  const dLinks = coreLinks.map(l => `<a href="${l.href}" id="${l.id}" class="ev-nav-link${mkActive(l.page)}">${l.label}</a>`).join('');
-  const mLinks = coreLinks.map(l => `<a href="${l.href}" class="ev-mobile-link${mkActive(l.page)}">${l.label}</a>`).join('');
-
   nav.innerHTML = `
     <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
       <div style="display:flex;align-items:center;justify-content:space-between;height:64px;">
+
         <!-- Logo -->
         <a href="/" id="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
           <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(99,102,241,0.3);">
@@ -316,54 +312,82 @@ window.renderNav = function renderNav(user, activePage) {
           <span style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;background:linear-gradient(135deg,#fff,#9ca3af);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EntreVid</span>
         </a>
 
-        <!-- Desktop centre links -->
+        <!-- Desktop centre links (hidden on mobile via CSS) -->
         <div id="nav-desktop-links">${dLinks}</div>
 
-        <!-- Desktop right -->
+        <!-- Desktop right auth (hidden on mobile via CSS) -->
         <div id="nav-desktop-right">${extraDesktop}${authSection}</div>
 
-        <!-- Hamburger -->
-        <button id="nav-mobile-btn" aria-label="Open menu" style="padding:8px;border-radius:8px;background:none;border:none;cursor:pointer;color:#9ca3af;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <!-- Hamburger button (hidden on desktop via CSS) -->
+        <button id="nav-mobile-btn" aria-label="Open menu" style="display:flex;align-items:center;justify-content:center;padding:8px;border-radius:8px;background:none;border:none;cursor:pointer;color:#d1d5db;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
         </button>
       </div>
     </div>
 
-    <!-- Overlay -->
-    <div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:40;"></div>
-    <!-- Sheet -->
-    <div id="mobile-sheet" style="display:none;flex-direction:column;position:fixed;top:0;right:0;height:100%;width:288px;background:#141826;border-left:1px solid rgba(255,255,255,0.08);z-index:50;padding:24px;overflow-y:auto;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
-        <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+    <!-- Dark overlay -->
+    <div id="mobile-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:998;"></div>
+
+    <!-- Slide-in sheet -->
+    <div id="mobile-sheet" style="display:none;flex-direction:column;position:fixed;top:0;right:0;height:100dvh;width:300px;max-width:85vw;background:#141826;border-left:1px solid rgba(255,255,255,0.08);z-index:999;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,0.6);">
+
+      <!-- Sheet header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
           <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
           <span style="font-family:'Sora',sans-serif;font-weight:700;color:#fff;">EntreVid</span>
         </a>
-        <button id="mobile-sheet-close" style="padding:8px;border-radius:8px;background:none;border:none;cursor:pointer;color:#9ca3af;">
+        <button id="mobile-sheet-close" aria-label="Close menu" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);border:none;cursor:pointer;color:#9ca3af;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
+
+      <!-- Nav links -->
+      <div style="padding:16px 12px 4px;display:flex;flex-direction:column;gap:2px;">
         ${mLinks}
         ${extraMobile}
       </div>
-      ${mobileAuthSection}
+
+      <!-- Auth section -->
+      <div style="padding:0 12px 24px;">
+        ${mobileAuthSection}
+      </div>
     </div>
   `;
 
-  // Sheet toggle
+  // Toggle handlers
   const mobileBtn = document.getElementById('nav-mobile-btn');
-  const sheet = document.getElementById('mobile-sheet');
-  const overlay = document.getElementById('mobile-overlay');
-  const closeBtn = document.getElementById('mobile-sheet-close');
-  const openSheet = () => { sheet.style.display = 'flex'; overlay.style.display = 'block'; document.body.style.overflow = 'hidden'; };
-  const closeSheet = () => { sheet.style.display = ''; overlay.style.display = ''; document.body.style.overflow = ''; };
-  if (mobileBtn) mobileBtn.addEventListener('click', openSheet);
-  if (closeBtn) closeBtn.addEventListener('click', closeSheet);
-  if (overlay) overlay.addEventListener('click', closeSheet);
+  const sheet     = document.getElementById('mobile-sheet');
+  const overlay   = document.getElementById('mobile-overlay');
+  const closeBtn  = document.getElementById('mobile-sheet-close');
 
-  // Logout
+  const openSheet = () => {
+    sheet.style.display   = 'flex';
+    overlay.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  };
+  const closeSheet = () => {
+    sheet.style.display   = 'none';
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  if (mobileBtn) mobileBtn.addEventListener('click', openSheet);
+  if (closeBtn)  closeBtn.addEventListener('click', closeSheet);
+  if (overlay)   overlay.addEventListener('click', closeSheet);
+
+  // Close on nav link click
+  if (sheet) {
+    sheet.querySelectorAll('a').forEach(a => a.addEventListener('click', closeSheet));
+  }
+
+  // Logout handlers
   ['nav-logout-btn', 'nav-logout-btn-mobile'].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.addEventListener('click', async () => {
