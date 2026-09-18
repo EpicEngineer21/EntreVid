@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EntreVid — Shared Frontend Utilities
  * Provides: CSRF, auth context, role-aware nav, footer, flash messages, fetch helpers.
  */
@@ -36,50 +36,70 @@ window.extractYouTubeId = function extractYouTubeId(urlOrId) {
 
 // ── Fetch helpers ────────────────────────────────────────────
 window.getJson = async function getJson(url) {
-  const res = await fetch(url, { credentials: 'include' });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    return { __httpError: true, status: res.status, ...(data || {}) };
+  try {
+    const res = await fetch(url, { credentials: 'include' });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      return { __httpError: true, status: res.status, ...(data || {}) };
+    }
+    return res.json();
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return { __httpError: true, status: 0, errors: ['Network error. Please check your connection.'] };
   }
-  return res.json();
 };
 
 window.postJson = async function postJson(url, body) {
   const headers = { 'Content-Type': 'application/json' };
   if (window.App.csrfToken) headers['x-csrf-token'] = window.App.csrfToken;
-  const res = await fetch(url, {
-    method: 'POST',
-    credentials: 'include',
-    headers,
-    body: JSON.stringify(body || {}),
-  });
-  const data = await res.json().catch(() => ({}));
-  return { res, data };
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers,
+      body: JSON.stringify(body || {}),
+    });
+    const data = await res.json().catch(() => ({}));
+    return { res, data };
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return { res: { ok: false }, data: { ok: false, errors: ['Network error. Please try again.'] } };
+  }
 };
 
 window.putJson = async function putJson(url, body) {
   const headers = { 'Content-Type': 'application/json' };
   if (window.App.csrfToken) headers['x-csrf-token'] = window.App.csrfToken;
-  const res = await fetch(url, {
-    method: 'PUT',
-    credentials: 'include',
-    headers,
-    body: JSON.stringify(body || {}),
-  });
-  const data = await res.json().catch(() => ({}));
-  return { res, data };
+  try {
+    const res = await fetch(url, {
+      method: 'PUT',
+      credentials: 'include',
+      headers,
+      body: JSON.stringify(body || {}),
+    });
+    const data = await res.json().catch(() => ({}));
+    return { res, data };
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return { res: { ok: false }, data: { ok: false, errors: ['Network error. Please try again.'] } };
+  }
 };
 
 window.deleteJson = async function deleteJson(url) {
   const headers = {};
   if (window.App.csrfToken) headers['x-csrf-token'] = window.App.csrfToken;
-  const res = await fetch(url, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers,
-  });
-  const data = await res.json().catch(() => ({}));
-  return { res, data };
+  try {
+    const res = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers,
+    });
+    const data = await res.json().catch(() => ({}));
+    return { res, data };
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return { res: { ok: false }, data: { ok: false, errors: ['Network error. Please try again.'] } };
+  }
 };
 
 // ── Init app context (CSRF + current user) ───────────────────

@@ -217,7 +217,18 @@ const EMAIL_CONFIGURED = Boolean(EMAIL_FROM) && Boolean(SMTP_USER) && Boolean(SM
 if (!EMAIL_CONFIGURED) console.warn('  ⚠️  Email not configured — set EMAIL_FROM, SMTP_USER, SMTP_PASS in .env');
 
 const transporter = EMAIL_CONFIGURED
-  ? nodemailer.createTransport({ host: SMTP_HOST, port: SMTP_PORT, secure: false, auth: { user: SMTP_USER, pass: SMTP_PASS } })
+  ? nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: false,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+      pool: true,
+      maxConnections: 3,
+      maxMessages: 100,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000
+    })
   : null;
 
 function emailHtml(accentColor, bodyHtml) {
