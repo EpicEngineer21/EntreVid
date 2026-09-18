@@ -42,8 +42,25 @@
     });
     if (!res.ok || !data.ok) {
       window.setButtonLoading(submitBtn, false, orig);
-      if (errText) errText.textContent = (data.errors && data.errors[0]) || 'Login failed.';
-      if (errBox) errBox.style.display = 'flex';
+      if (errBox) {
+        if (data.unverified) {
+          errBox.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <span id="error-text">Please verify your email before logging in.</span>
+              <a href="/verify-email" style="font-size:13px; color:#818cf8; text-decoration:underline; font-weight:500;">Verify Email</a>
+            </div>
+          `;
+          errBox.style.alignItems = 'flex-start';
+        } else {
+          errBox.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="error-text">${(data.errors && data.errors[0]) || 'Login failed.'}</span>
+          `;
+          errBox.style.alignItems = 'center';
+        }
+        errBox.style.display = 'flex';
+      }
       return;
     }
     window.location.href = data.next || '/';

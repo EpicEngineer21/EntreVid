@@ -775,6 +775,18 @@ app.post('/api/auth/login', rl.login, async (req, res) => {
 
     await resetFailedLogins(user);
 
+    if (!user.verified) {
+      await logAudit('LOGIN_FAIL', { userId: user.id, email, ip: getIp(req), userAgent: req.headers['user-agent'], meta: { reason: 'unverified' } });
+      req.session.pendingEmail = user.email;
+      return req.session.save(() => {
+        res.status(403).json({ 
+          ok: false, 
+          errors: ['Please verify your email before logging in.'],
+          unverified: true
+        });
+      });
+    }
+
     if (ADMIN_EMAILS.includes(email) && user.role !== 'admin') {
       user.role = 'admin';
       await user.save();
